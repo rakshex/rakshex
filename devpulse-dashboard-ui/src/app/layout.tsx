@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DevPulse — API Security & Cost Intelligence",
-  description: "The API Security & Cost Intelligence Platform built for the AI Agent Era.",
+  title: "RaksHex — API Change Intelligence",
+  description: "Analyze upstream API contract changes with workspace-scoped evidence and human review.",
 };
 
 export default function RootLayout({

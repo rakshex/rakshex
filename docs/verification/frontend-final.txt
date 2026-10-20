@@ -1,0 +1,11 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> devpulse-dashboard-ui@0.1.0 test
+> jest --passWithNoTests --runInBand
+
+
+Test Suites: 9 passed, 9 total
+Tests:       34 passed, 34 total
+Snapshots:   0 total
+Time:        12.398 s
+Ran all test suites.

@@ -29,6 +29,7 @@ interface NavGroup {
 }
 
 const NAV: NavGroup[] = [
+  { title: "RaksHex", items: [{ label: "Self-Repair", href: "/self-repair", icon: <ShieldIcon className="w-[18px] h-[18px]" /> }] },
   {
     title: 'Overview',
     items: [
@@ -254,8 +255,8 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="overflow-hidden">
-              <h1 className="text-[15px] font-bold text-white tracking-tight leading-tight">DevPulse</h1>
-              <p className="text-[10px] text-zinc-500 leading-tight">v4.0</p>
+              <h1 className="text-[15px] font-bold text-white tracking-tight leading-tight">RaksHex</h1>
+              <p className="text-[10px] text-zinc-500 leading-tight">API Change Intelligence</p>
             </div>
           )}
         </Link>

@@ -1,4 +1,4 @@
-﻿"""
+"""
 DevPulse SQLAlchemy ORM Models â€” PostgreSQL-backed data layer.
 
 All tables mirror the original SQLite schema plus new AI Security
@@ -462,3 +462,15 @@ class CustomApi(Base):
     metadata_json = Column(JSON, default=dict)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class RepairAnalysis(Base):
+    """Minimal consented analysis evidence; raw specifications are never persisted."""
+    __tablename__ = "repair_analyses"
+    id = Column(String(36), primary_key=True)
+    workspace_id = Column(String(64), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    actor_id = Column(BigInt, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    report = Column(JSON, nullable=False)
+    evidence_hash = Column(String(64), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    __table_args__ = (Index("ix_repair_analyses_workspace_created", "workspace_id", "created_at"),)

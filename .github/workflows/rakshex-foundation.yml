@@ -1,0 +1,34 @@
+name: RaksHex foundation checks
+on:
+  pull_request:
+  push:
+    branches: ['codex/rakshex-*']
+permissions:
+  contents: read
+jobs:
+  postgres-membership:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: rakshex_test
+          POSTGRES_PASSWORD: isolated_ci_only
+          POSTGRES_DB: rakshex_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+        working-directory: devpulse-backend
+      - name: Rehearse additive migration and rollback with parent data
+        run: python scripts/check_repair_migration.py
+      - name: Verify real PostgreSQL membership row lock
+        working-directory: devpulse-backend
+        env:
+          TEST_PG_URL: postgresql+asyncpg://rakshex_test:isolated_ci_only@localhost:5432/rakshex_test
+        run: python -m pytest tests/test_teams_pg_locking.py -q --tb=short

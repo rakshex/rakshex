@@ -50,6 +50,7 @@ from routes.cicd import router as cicd_router
 from routes.analytics import router as analytics_router
 from routes.alerts import router as alerts_router
 from routes.teams import router as teams_router
+from routes.repair_analyses import router as repair_analyses_router
 from routes.marketplace_routes import router as marketplace_router
 from routes.billing import router as billing_router
 from routes.custom_apis import router as custom_apis_router
@@ -325,6 +326,7 @@ app.include_router(analytics_router, tags=["Analytics"])
 app.include_router(alerts_router, tags=["Alerts"])
 # Register routers - Phase 3 (Scale)
 app.include_router(teams_router, tags=["Teams"])
+app.include_router(repair_analyses_router)
 app.include_router(marketplace_router, tags=["Marketplace"])
 app.include_router(billing_router, tags=["Billing"])
 app.include_router(custom_apis_router, tags=["Custom APIs"])

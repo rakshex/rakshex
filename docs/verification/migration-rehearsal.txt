@@ -1,0 +1,1 @@
+PASS: isolated upgrade/downgrade/upgrade; schema, foreign keys and parent data preserved

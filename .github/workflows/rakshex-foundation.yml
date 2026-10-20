@@ -50,4 +50,4 @@ jobs:
           echo "REPAIR_SANDBOX_IMAGE=$(docker image inspect --format '{{.Id}}' rakshex-repair-sandbox)" >> "$GITHUB_ENV"
       - name: Verify real API-to-worker repair and container restrictions
         working-directory: devpulse-backend
-        run: python -m pytest tests/test_repair_jobs.py tests/test_repair_github.py -q --tb=short
+        run: python -m pytest tests/test_repair_jobs.py tests/test_repair_github.py tests/test_repair_preflight.py tests/test_impact_event_provenance.py -q --tb=short

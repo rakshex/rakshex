@@ -224,3 +224,13 @@ async def test_concurrent_submission_has_one_active_job(client,owner):
     assert sorted(response.status_code for response in responses)==[201,409]
     async with AsyncSessionLocal() as session:
         assert await session.scalar(select(func.count()).select_from(RepairJob).where(RepairJob.workspace_id==ws))==1
+
+
+@pytest.mark.parametrize('change',['body_required','content_type','path_parameter','path_server'])
+def test_other_body_or_path_semantics_refuse_rename(change):
+    data=fixture_input();path=data['after']['paths']['/v1/orders'];body=path['post']['requestBody']
+    if change=='body_required':body['required']=True
+    elif change=='content_type':body['content']['text/plain']={'schema':{'type':'string'}}
+    elif change=='path_parameter':path['parameters']=[{'name':'tenant','in':'query','required':True,'schema':{'type':'string'}}]
+    else:path['servers']=[{'url':'https://different.example.com'}]
+    with pytest.raises(RepairRefused):plan_repair(data['before'],data['after'],data['files'],data['rule'])

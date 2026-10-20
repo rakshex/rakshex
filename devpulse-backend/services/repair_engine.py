@@ -5,12 +5,13 @@ confirm the removed/added request property and an unchanged property schema.
 Other SDKs, dynamic payloads and semantic migrations stop for human review.
 """
 import ast
+import copy
 import difflib
 import hashlib
 import re
 from pathlib import PurePosixPath
 from urllib.parse import urlsplit
-from services.contract_analysis import digest, validate_contract
+from services.contract_analysis import digest, validate_contract, METHODS
 
 MAX_FILES = 40
 MAX_SOURCE_BYTES = 262144
@@ -74,6 +75,14 @@ def plan_repair(before, after, files, rule):
     if digest(old_normal)!=digest(new):
         raise RepairRefused('Other request-schema changes require human review')
     old_op=before['paths'][path][method];new_op=after['paths'][path][method]
+    normalized_body=copy.deepcopy(old_op['requestBody'])
+    normalized_body['content']['application/json']['schema']=old_normal
+    if digest(normalized_body)!=digest(new_op['requestBody']):
+        raise RepairRefused('Other request-body changes require human review')
+    old_path={k:v for k,v in before['paths'][path].items() if k not in METHODS}
+    new_path={k:v for k,v in after['paths'][path].items() if k not in METHODS}
+    if digest(old_path)!=digest(new_path):
+        raise RepairRefused('Path-level parameter/server changes require human review')
     if digest({k:v for k,v in old_op.items() if k!='requestBody'})!=digest({k:v for k,v in new_op.items() if k!='requestBody'}):
         raise RepairRefused('Other operation changes require human review')
     if digest({k:v for k,v in before.items() if k!='paths'})!=digest({k:v for k,v in after.items() if k!='paths'}):

@@ -69,3 +69,8 @@ active-workspace unique-index migration closes concurrent submission races. Focu
 repair/analysis/concurrency run: **43 passed, 6 skips** (4 Docker, 2 PG), 3 warnings; migration
 upgrade/downgrade/re-upgrade passed including the partial unique index. Final CI reruns the
 actual PostgreSQL case and full browser/container suites; see PR for immutable evidence.
+
+Contract guard follow-up: rejects simultaneous request-body required/content-type and
+path-level parameter/server changes. Final local repair/publisher suite: **37 passed,
+4 Docker-only skips**, 3 warnings (9.09s). These checks keep key-rename acceptance
+narrow; they do not claim universal semantic compatibility.

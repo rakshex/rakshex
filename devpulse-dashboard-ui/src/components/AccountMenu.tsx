@@ -22,7 +22,7 @@ export default function AccountMenu() {
   }, []);
   if (!user) return <Link href="/login" className="text-sm text-violet-300">Sign in</Link>;
   return <div className="flex items-center gap-2 text-sm">
-    <span>{user.username}</span>
+    <span className="hidden max-w-32 truncate sm:block" title={user.username}>{user.username}</span>
     <Button variant="ghost" size="sm" onClick={() => { apiClient.logout(); window.location.assign('/login'); }}>Sign out</Button>
   </div>;
 }

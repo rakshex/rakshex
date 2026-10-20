@@ -29,3 +29,12 @@ old edge/monorepo runtime. Preserve legacy authenticated reads and require expli
 review before any persistent ciphertext migration. Treat scanners as static heuristics
 and CI budget/compatibility as not_run. Make account ownership explicit without claiming
 workspace policy coverage. Preserve an honest incomplete product state.
+
+## Repair scope and execution
+
+Do not import the historical check runner that inherits the host environment and spawns
+commands without isolation. Preserve its principle of bounded edits and evidence-bound
+approval through a native FastAPI job interface and separate restricted Docker worker.
+Ship an explicit Python requests adapter first; do not invent provider semantics or
+claim general SDK compatibility. Use server-bound App installation credentials rather
+than accepting a browser PAT or repurposing the connected ChatGPT account.

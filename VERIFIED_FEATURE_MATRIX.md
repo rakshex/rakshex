@@ -17,3 +17,20 @@ Status describes bounded implemented behavior, not a product-wide guarantee. Con
 | LeakShield | Incomplete | Redaction is a prerequisite, not end-to-end provider revocation |
 | Premium responsive UX / accessibility | Incomplete | Existing shell/mobile/a11y review and repair required |
 | Production deployment | Not approved or performed | Main untouched; draft PR only |
+
+## Repair workflow increment — 2026-10-20 (supersedes earlier pipeline row)
+
+| Capability | Implemented boundary | Verification |
+|---|---|---|
+| Code impact and patch | Deterministic Python requests JSON-key rename, schema-confirmed, scoped AST locations/diff | New repair-engine tests; refuses dynamic/ambiguous calls |
+| Artifact lifecycle | Consented encrypted source/patch bundle, workspace history/read/delete | Real DB/API ownership tests |
+| Isolated tests | Separate Docker worker, pinned image, no network/credentials/host fallback, bounded resources/output/time | Dedicated real-container CI job; unavailable locally |
+| Acceptance gate | Baseline must fail; candidate must pass; same nonzero test count | Real-container CI plus negative cases |
+| Draft-PR publisher | Operator-bound GitHub App; admin exact-evidence approval; immutable snapshot/base checks; idempotent draft branch/PR | Fake-transport protocol tests; live App installation/key not available |
+| UI workflow | Source manifest, consent, jobs, exact diff, before/after evidence, guarded publish/delete | Unit tests and new real API browser flow |
+| Responsive shell | Mobile drawer, desktop collapse/padding, focus trap/Escape/restore, skip link | Five-viewport and axe browser checks added; verify CI results |
+
+This is a functional supported repair pipeline, not universal SDK repair. JS/TS,
+Stripe/Firebase adapters, semantic changes and full-repository test coverage remain
+unsupported. A separate worker and GitHub App connection are operator prerequisites,
+not evidence that this development environment has been deployed/connected.

@@ -15,3 +15,11 @@ Method: source searches for demo/mock/simulated/random/placeholder plus call-sit
 | Self-Repair UI | Real bounded analysis | Does not claim patches, sandbox passes or PR publication |
 
 Raw legacy scan evidence remains in historical storage until a separately reviewed retention migration. Redaction on read does not erase backups. Generated security suggestions are advice, not tested repairs.
+
+## Repair fixtures
+
+repair-fixtures/python-json-rename is an explicitly synthetic regression against
+api.example.com. Its baseline actually fails the new request-key assertion; the generated
+candidate is intended to pass in the isolated CI container. No provider compatibility is
+inferred from this fixture. GitHub publisher tests use an in-process fake HTTP transport;
+there is no fabricated live App installation or PR result in the application UI.

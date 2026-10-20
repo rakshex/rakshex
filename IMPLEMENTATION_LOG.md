@@ -110,3 +110,13 @@ legacy scanners and CI; added signed, replay-conflict CI events; redacted known 
 at output/cache/storage boundaries and minimized opt-in suggestion prompts. Startup database
 failure is fatal and unconfigured email no longer reports delivery. Added synthetic security
 regressions and an independent-connection SQLite rollback regression. See TEST_RESULTS.md.
+
+## 2026-10-20 — repair workflow and responsive UI
+
+Added repair_engine.py, repair_sandbox.py, repair_github.py, repair_worker.py and
+routes/repair_jobs.py; additive encrypted repair_jobs migration/model. Implemented
+Python requests JSON-key patch planning, no-host-fallback Docker validation and bound
+GitHub App draft publishing. Added a real API-driven RepairWorkbench, responsive shell,
+keyboard navigation, confirmations, source consent and evidence review. Added synthetic
+regression fixtures, protocol/API/unit/container/browser/axe tests and worker operations
+documentation. Aligned frontend CI/runtime engines with Node 24 and pinned Cypress 16.1.1.

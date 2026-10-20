@@ -15,3 +15,19 @@ Scope: this development branch only. This is a verified security increment, not 
 No production credentials were used. Crypto regressions use synthetic fixtures. No stored production rows were migrated. The test database now uses separate SQLite connections; a regression verifies that closing a reader cannot roll back another session's write. PostgreSQL lock behavior remains a distinct CI check.
 
 Production blockers still include legacy global analytics/reporting routes, complete workspace authorization, session/cookie/proxy/rate-limit review, retention cleanup, backup/restore and operational key rotation. Do not enable a money-moving broker or deploy this branch based on these tests.
+
+## Repair execution/publication boundary
+
+New repair jobs never execute uploaded source in the API. The separate worker passes no
+host environment into a pinned, read-only, non-root, network-disabled resource-bounded
+container and rejects unrun/empty/green-on-green/failed evidence. It rechecks accepted
+membership and artifact hashes. Test source is not rewritten by the repair planner.
+Source/patch bundles are encrypted and identity-bound inside the envelope; authorized
+artifact reads remain no-store. No model egress exists in this workflow.
+
+Publication requires current admin/owner approval of the exact patch/report hash and a
+server-bound repository/App installation. The publisher validates all scoped source/tests
+against an immutable repository base, refuses moved bases and never force-pushes, merges
+or deploys. Live GitHub App credentials are not configured; protocol tests use fake HTTP.
+Dedicated worker infrastructure, lease/crash recovery, retention/restore and sandbox-host
+hardening remain operational blockers. See devpulse-backend/SELF_REPAIR_OPERATIONS.md.

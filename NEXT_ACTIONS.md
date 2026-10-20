@@ -41,3 +41,17 @@ SECURITY_REMEDIATION.md; do not interpret the earlier item 2 as entirely complet
 
 Prioritize remaining authorization/session boundaries, then the genuine repair runner
 and patch evidence. Mobile shell, a11y and measured performance remain open, not passed.
+
+## Following the implemented repair workflow
+
+1. Read final-head CI: actual Docker acceptance/isolation, PG migration/locks, full stack,
+   browser API flow, five viewport widths and automated accessibility checks.
+2. Provision a dedicated worker, reviewed immutable image, encryption master and scoped
+   DB connection; configure supervisor/lease recovery and retention/restore policies.
+3. Install a least-privilege GitHub App on the selected rakshex repository and bind it to
+   the workspace via operator configuration. Verify a real draft PR; never share App keys
+   through chat or browser. Connected ChatGPT GitHub access is not the backend App key.
+4. Extend adapters with separately verified real Stripe/Firebase/JS/TS migrations before
+   claiming coverage. Existing Python static-JSON support must remain explicit.
+5. Complete the remaining production security, legacy module and manual UX/performance
+   work listed in PRODUCTION_READINESS.md. Do not merge/deploy this draft automatically.

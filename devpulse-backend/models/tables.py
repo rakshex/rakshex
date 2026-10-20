@@ -474,3 +474,20 @@ class RepairAnalysis(Base):
     evidence_hash = Column(String(64), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     __table_args__ = (Index("ix_repair_analyses_workspace_created", "workspace_id", "created_at"),)
+
+
+class RepairJob(Base):
+    """Encrypted source/patch bundle and non-source validation/publication evidence."""
+    __tablename__ = 'repair_jobs'
+    id = Column(String(36), primary_key=True)
+    workspace_id = Column(String(64), ForeignKey('teams.id', ondelete='CASCADE'), nullable=False)
+    actor_id = Column(BigInt, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    status = Column(String(32), nullable=False, default='queued')
+    sealed_bundle = Column(Text, nullable=False)
+    patch_hash = Column(String(64), nullable=False)
+    report = Column(JSON, nullable=False)
+    approved_by = Column(BigInt, ForeignKey('users.id', ondelete='SET NULL'))
+    approval_hash = Column(String(64))
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    __table_args__ = (Index('ix_repair_jobs_workspace_created','workspace_id','created_at'),)

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 /* ─── Icon Components ────────────────────────────────────────── */
 
@@ -233,14 +233,13 @@ const NAV: NavGroup[] = [
 
 /* ─── Sidebar Component ──────────────────────────────────────── */
 
-export default function Sidebar() {
+export default function Sidebar({ collapsed = false, onCollapse, onNavigate }: { collapsed?: boolean; onCollapse?: () => void; onNavigate?: () => void }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <aside
       className={`
-        fixed left-0 top-0 bottom-0 z-30
+        fixed left-0 top-0 bottom-0 z-40
         flex flex-col
         bg-zinc-950 border-r border-zinc-800/50
         transition-all duration-200 ease-out
@@ -249,21 +248,21 @@ export default function Sidebar() {
     >
       {/* Logo */}
       <div className="h-16 flex items-center px-4 border-b border-zinc-800/50 shrink-0">
-        <Link href="/" className="flex items-center gap-3 min-w-0">
+        <Link href="/" onClick={onNavigate} aria-label="RaksHex home" className="flex items-center gap-3 min-w-0">
           <div className="w-9 h-9 bg-gradient-to-br from-red-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/15 shrink-0">
             <ShieldIcon className="w-5 h-5 text-white" />
           </div>
           {!collapsed && (
             <div className="overflow-hidden">
               <h1 className="text-[15px] font-bold text-white tracking-tight leading-tight">RaksHex</h1>
-              <p className="text-[10px] text-zinc-500 leading-tight">API Change Intelligence</p>
+              <p className="text-[10px] text-zinc-400 leading-tight">API Change Intelligence</p>
             </div>
           )}
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6 scrollbar-thin">
+      <nav aria-label="Primary navigation" className="flex-1 overflow-y-auto py-4 px-3 space-y-6 scrollbar-thin">
         {NAV.map((group) => (
           <div key={group.title}>
             {!collapsed && (
@@ -282,17 +281,20 @@ export default function Sidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={onNavigate}
+                    aria-current={isActive ? "page" : undefined}
                     className={`
                       flex items-center gap-3 px-2.5 py-2 rounded-xl text-[13px] font-medium
                       transition-all duration-150 group relative
                       ${isActive
                         ? 'bg-violet-600/10 text-violet-400 border border-violet-500/20'
-                        : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/40 border border-transparent'
+                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40 border border-transparent'
                       }
                     `}
                     title={collapsed ? item.label : undefined}
+                    aria-label={collapsed ? item.label : undefined}
                   >
-                    <span className={`shrink-0 ${isActive ? 'text-violet-400' : 'text-zinc-500 group-hover:text-zinc-300'}`}>
+                    <span className={`shrink-0 ${isActive ? 'text-violet-400' : 'text-zinc-400 group-hover:text-zinc-300'}`}>
                       {item.icon}
                     </span>
                     {!collapsed && (
@@ -319,8 +321,9 @@ export default function Sidebar() {
       {/* Collapse Toggle */}
       <div className="p-3 border-t border-zinc-800/50 shrink-0">
         <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="w-full flex items-center justify-center gap-2 px-2.5 py-2 rounded-xl text-xs text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/40 transition-colors"
+          onClick={onCollapse}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="hidden w-full md:flex items-center justify-center gap-2 px-2.5 py-2 rounded-xl text-xs text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/40 transition-colors"
         >
           <svg className={`w-4 h-4 transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />

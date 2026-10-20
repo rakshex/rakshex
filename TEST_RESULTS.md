@@ -20,3 +20,24 @@ Prior revision 523c786 had green remote PostgreSQL smoke/lock+migration, fronten
 Cypress (20), and Cloudflare checks. Those historical checks are not a rerun against
 this increment. See the draft PR checks for current revision status. No production
 load, delivery, provider mutation, model request, repair sandbox or deployment was tested.
+
+## Repair workflow increment
+
+- Full local backend: **264 passed, 5 skipped, 3 warnings**, 90.59s. Skips include the
+  existing PostgreSQL-only case and four dedicated Docker cases (Docker unavailable).
+- New frontend: **37 tests / 10 suites passed**. TypeScript was run from the frontend
+  workspace; no compiler errors. An initial root-directory tsc printed usage and is not
+  counted as a successful type check.
+- Isolated migration upgrade/downgrade/re-upgrade passed with the new repair_jobs head.
+- New CI: real Docker baseline/candidate, network/credential/read-only tests, timeout,
+  output cap and rejection of failed/green-baseline patches; actual PostgreSQL and browser
+  checks must be read on the final head. No local container success is claimed.
+- New browser spec exercises real queued job creation, artifact review, persisted reload
+  and deletion, plus five viewport widths, keyboard drawer behavior and axe A/AA checks.
+- GitHub App JWT/signature, source/base binding, least-privilege token request, refusal
+  paths and idempotent draft creation are protocol-tested with fake HTTP, not a live App.
+
+Initial new test setup incorrectly expected existing workspace creation to return 201;
+corrected to its actual 200 contract. Dependency installation hit a truncated Cypress
+binary; installation was repeated with binary download disabled. CI supplies the browser.
+Final immutable CI run links and any failures/fixes will be recorded in the draft PR.

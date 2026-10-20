@@ -43,3 +43,11 @@ not workspace-scoped LeakShield. Existing historical sensitive evidence is not e
 No managed rotation, sandbox runner, full repair pipeline, atomic budget broker, complete
 mobile/a11y or measured performance clearance exists. Custom pytest event-loop fixture
 emits deprecation warnings and should be modernized without changing test isolation.
+
+## Repair adapter release limits
+
+No configured backend GitHub App key/installation or deployed dedicated worker exists.
+Live App publication remains unverified; no connected ChatGPT token is repurposed.
+Python static requests JSON-key renames only; JS/TS and provider SDK adapters remain
+unsupported. Worker crash/lease recovery requires operator reconciliation; SQLite permits
+one worker only. Full manual screen-reader, legacy UI and performance audits are pending.

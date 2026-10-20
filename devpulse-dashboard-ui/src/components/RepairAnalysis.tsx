@@ -65,6 +65,7 @@ export default function RepairAnalysis() {
   }
 
   async function remove(item: Analysis) {
+    if (!window.confirm('Permanently delete this analysis evidence?')) return;
     setPending(true); setError('');
     try {
       // DELETE has no JSON body; the generic JSON helper is deliberately not used.
@@ -92,7 +93,7 @@ export default function RepairAnalysis() {
   if (loading) return <p role="status">Loading workspaces…</p>;
   return <div className="space-y-6">
     <p className="rounded-lg border border-blue-800 p-4 text-sm text-blue-200">
-      Contract analysis is available. Code impact, patches, isolated test validation and GitHub draft PR publication are pending integration.
+      Compare contracts here. Use Repair and validate for supported Python request-key repairs, isolated worker validation and approved draft PR publication.
       Only inline OpenAPI 3.0/3.1 JSON is supported; references, callbacks and webhooks are rejected.
     </p>
     {error && <p role="alert" className="text-red-300">{error}</p>}

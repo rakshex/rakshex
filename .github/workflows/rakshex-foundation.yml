@@ -32,3 +32,22 @@ jobs:
         env:
           TEST_PG_URL: postgresql+asyncpg://rakshex_test:isolated_ci_only@localhost:5432/rakshex_test
         run: python -m pytest tests/test_teams_pg_locking.py -q --tb=short
+  repair-sandbox:
+    name: Isolated Self-Repair validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+        working-directory: devpulse-backend
+      - name: Build offline test image and pin immutable image ID
+        run: |
+          docker build -t rakshex-repair-sandbox repair-sandbox
+          echo "REPAIR_SANDBOX_IMAGE=$(docker image inspect --format '{{.Id}}' rakshex-repair-sandbox)" >> "$GITHUB_ENV"
+      - name: Verify real API-to-worker repair and container restrictions
+        working-directory: devpulse-backend
+        run: python -m pytest tests/test_repair_jobs.py tests/test_repair_github.py -q --tb=short

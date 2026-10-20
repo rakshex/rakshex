@@ -1,0 +1,5 @@
+{
+  "before": {"openapi":"3.0.3","paths":{"/v1/orders":{"post":{"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"customer_ref":{"type":"string"}},"required":["customer_ref"]}}}},"responses":{"200":{"description":"ok"}}}}}},
+  "after": {"openapi":"3.0.3","paths":{"/v1/orders":{"post":{"requestBody":{"content":{"application/json":{"schema":{"type":"object","properties":{"customer_id":{"type":"string"}},"required":["customer_id"]}}}},"responses":{"200":{"description":"ok"}}}}}},
+  "rule":{"method":"POST","path":"/v1/orders","origin":"https://api.example.com","removed":"customer_ref","added":"customer_id","provenance":"https://example.com/migrations/customer-id"}
+}

@@ -49,3 +49,12 @@ latest full CI rerun is tracked on the PR, independently of the earlier snapshot
 Targeted credential/scanner/CI fixes and synthetic regressions added; see
 SECURITY_REMEDIATION.md, VERIFIED_FEATURE_MATRIX.md and TEST_RESULTS.md. Full Self-Repair,
 Budget Lock and production clearance remain incomplete. This branch is a draft only.
+
+## Repair workflow implementation
+
+Added a bounded Python requests repair path with schema-confirmed AST impact/patches,
+encrypted jobs, isolated worker validation, exact-evidence admin approval and GitHub App
+draft-PR publisher. Responsive navigation and a consent/evidence workbench are implemented.
+The App key/installation and worker deployment are not configured in this session. See
+SELF_REPAIR_OPERATIONS.md, updated feature matrix and PR final-head checks. Universal SDK
+repair and production clearance remain unsupported; no merge or deployment performed.

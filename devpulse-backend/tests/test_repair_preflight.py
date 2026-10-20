@@ -9,7 +9,7 @@ from services import repair_preflight
 SHA='a'*40
 TREE='b'*40
 BLOB='c'*40
-SOURCE=b'print(123)\\n'
+SOURCE=b'print(123)\n'
 PAYLOAD={'repository':'rakshex/rakshex','base_branch':'development','base_sha':SHA,
          'source_root':'','files':{'client.py':SOURCE.decode()}}
 CONFIG={'repository':'rakshex/rakshex','installation_id':42}

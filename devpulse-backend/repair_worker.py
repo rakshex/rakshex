@@ -16,6 +16,7 @@ from services.db_config import AsyncSessionLocal
 from services.repair_engine import plan_repair
 from services.repair_sandbox import validate_plan
 from services.repair_github import publish_draft
+from services.repair_preflight import verify_repair_source, PreflightBlocked
 
 
 async def process_one(job_id=None):
@@ -54,12 +55,19 @@ async def process_one(job_id=None):
                 row.status='draft_published';row.report={**report,'publication':result,'message':'Draft PR published. Human review and merge required.'}
                 await session.commit()
         else:
+            # Resolve immutable repository identity before any submitted source is
+            # handed to the isolated candidate-validation sandbox. Absence of a
+            # GitHub App installation fails closed, never host-executes.
+            config=configured_repository(payload['workspace_id'])
+            if not config:
+                raise PreflightBlocked('Workspace-bound GitHub source verification unavailable')
+            preflight=await verify_repair_source(payload,config)
             checks=await asyncio.to_thread(validate_plan,payload['files'],plan,os.environ.get('REPAIR_SANDBOX_IMAGE',''))
             async with AsyncSessionLocal() as session:
                 row=(await session.execute(select(RepairJob).where(RepairJob.id==ident).with_for_update())).scalar_one()
                 await _access(session,row.workspace_id,row.actor_id,write=True)
                 row.status='validated' if checks['accepted'] else 'validation_failed'
-                row.report={**report,'checks':checks,'message':checks['message']}
+                row.report={**report,'source_preflight':preflight,'checks':checks,'message':checks['message']}
                 await session.commit()
     except Exception:
         async with AsyncSessionLocal() as session:

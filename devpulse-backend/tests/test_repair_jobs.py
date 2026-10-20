@@ -132,8 +132,19 @@ async def test_worker_never_falls_back_to_host_execution(client,owner,monkeypatc
 
 @pytest.mark.skipif(not os.getenv('REPAIR_SANDBOX_IMAGE'),reason='Dedicated Docker integration job required')
 @pytest.mark.asyncio
-async def test_real_isolated_worker_baseline_fails_candidate_passes(client,owner):
+async def test_real_isolated_worker_baseline_fails_candidate_passes(client,owner,monkeypatch):
+    import repair_worker
     from repair_worker import process_one
+    # A synthetic fixture has no installed GitHub App. Stub only the remote,
+    # read-only identity check; the real container still executes and enforces
+    # all isolation, baseline-failure, and candidate-pass assertions below.
+    monkeypatch.setattr(repair_worker,'configured_repository',
+                        lambda workspace: {'repository':'rakshex/rakshex','installation_id':1})
+    async def fixture_preflight(payload,config):
+        assert config['repository']==payload['repository']
+        assert payload['base_sha']=='a'*40
+        return {'status':'fixture_verified_for_test_only','file_count':len(payload['files'])}
+    monkeypatch.setattr(repair_worker,'verify_repair_source',fixture_preflight)
     headers,ws=owner;data=fixture_input();data.update(workspace_id=ws,consent=True)
     job=(await client.post('/api/repair-jobs',headers=headers,json=data)).json()['job']
     assert await process_one(job['id'])
@@ -192,10 +203,13 @@ def test_no_final_newline_diff_is_applyable(tmp_path):
     import subprocess
     data=fixture_input();data['files']['client.py']=data['files']['client.py'].rstrip('\n')
     plan=plan_repair(data['before'],data['after'],data['files'],data['rule'])
-    (tmp_path/'client.py').write_text(data['files']['client.py'])
-    subprocess.run(['git','apply','--check','-'],input=plan['diff'],cwd=tmp_path,text=True,check=True,capture_output=True)
-    subprocess.run(['git','apply','-'],input=plan['diff'],cwd=tmp_path,text=True,check=True,capture_output=True)
-    assert (tmp_path/'client.py').read_text()==plan['edits'][0]['after']
+    # Preserve exact bytes on Windows: text-mode subprocess stdin can translate
+    # LF into CRLF, invalidating an otherwise well-formed unified diff.
+    (tmp_path/'client.py').write_bytes(data['files']['client.py'].encode('utf-8'))
+    patch_bytes=plan['diff'].encode('utf-8')
+    subprocess.run(['git','apply','--check','-'],input=patch_bytes,cwd=tmp_path,check=True,capture_output=True)
+    subprocess.run(['git','apply','-'],input=patch_bytes,cwd=tmp_path,check=True,capture_output=True)
+    assert (tmp_path/'client.py').read_bytes()==plan['edits'][0]['after'].encode('utf-8')
 
 
 @pytest.mark.asyncio

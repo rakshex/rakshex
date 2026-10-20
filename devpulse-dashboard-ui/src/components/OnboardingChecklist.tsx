@@ -54,7 +54,7 @@ export default function OnboardingChecklist() {
             </svg>
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-zinc-100 tracking-tight">Get Started with DevPulse</h3>
+            <h3 className="text-[15px] font-semibold text-zinc-100 tracking-tight">Get Started with RaksHex</h3>
             <p className="text-xs text-zinc-500 mt-0.5">{completedCount} of {steps.length} steps completed</p>
           </div>
         </div>

@@ -1,7 +1,8 @@
 # Next actions in dependency order
 
 1. Review this branch/import. Run GitHub CI, isolated PostgreSQL row-lock test and
-   actual Cypress browser flow. Do not merge/deploy automatically.
+   actual Cypress browser flow. The dedicated PG job and Self-Repair browser flow
+   already passed remotely; verify the follow-up branding/landing rerun. Do not merge/deploy automatically.
 2. Review #248 and #249 independently; preserve ciphertext compatibility, add
    standard authenticated encryption, redact before persistence/disclosure, scope
    security findings to accepted workspace members. Resolve critical legacy issues.

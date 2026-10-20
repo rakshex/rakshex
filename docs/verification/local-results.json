@@ -54,11 +54,11 @@
       "bytes": 301
     },
     "frontend-final.log": {
-      "sha256": "1b300f2ad002c11243470955a0ad1a92ba2a4038375e1b23db6f7a935a015cd1",
-      "bytes": 302
+      "sha256": "b593a445328d28e34e86cf2ba5fd59aa2b3dd82a1fe04c574235d29f5e999f64",
+      "bytes": 301
     },
     "frontend-build.log": {
-      "sha256": "c785f9ff5c835403acebb71be071f66d7c7a0f0e8dba101fa0e99f72835efdbb",
+      "sha256": "f759db36453c9879ea204a3da5640719a30cf413069d5ab8d654075530b8d02f",
       "bytes": 1961
     },
     "foundation-final.log": {
@@ -81,5 +81,6 @@
       "sha256": "8b0050222cc0cc46c152b84022ed402476fafd603e6a18dfd7ffdcad4f9c58e8",
       "bytes": 941
     }
-  }
+  },
+  "remote_evidence": "github-initial.json (separate head-specific evidence)"
 }

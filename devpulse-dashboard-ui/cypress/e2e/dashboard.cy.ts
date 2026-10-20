@@ -1,18 +1,18 @@
 /// <reference types="cypress" />
 
-describe('DevPulse Dashboard', () => {
+describe('RaksHex Dashboard', () => {
   beforeEach(() => {
     cy.visit('/');
   });
 
-  it('loads the dashboard page with v4.0 branding', () => {
+  it('loads the dashboard with RaksHex branding and Self-Repair navigation', () => {
     cy.contains('Dashboard').should('be.visible');
-    cy.contains('DevPulse').should('exist');
-    cy.contains('v4.0').should('exist');
+    cy.contains('RaksHex').should('exist');
+    cy.contains('Self-Repair').should('exist');
   });
 
   it('displays overview section', () => {
-    cy.contains('Get Started with DevPulse').should('be.visible');
+    cy.contains('Get Started with RaksHex').should('be.visible');
   });
 
   it('shows security score section', () => {
@@ -37,7 +37,7 @@ describe('DevPulse Dashboard', () => {
     cy.contains('Billing').should('exist');
   });
 
-  it('footer shows v4.0 branding', () => {
+  it('shows truthful backend connection status', () => {
     cy.scrollTo('bottom');
     cy.contains('Backend connected').should('be.visible');
     cy.contains('API connection').should('exist');

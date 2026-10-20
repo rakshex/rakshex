@@ -16,3 +16,8 @@ No newer founder decision reverses Self-Repair-first. Privacy retention across
 infrastructure, production runtime, supported provider coverage, real GitHub App
 permissions and commercial cost model still require release/design-partner decisions.
 These do not block the local, no-egress intake implementation.
+
+Follow-up on 2026-10-20: replace unsupported legacy landing-page savings/adoption
+claims with accurate current capabilities and roadmap statuses. Update the inherited
+v4.0 branding browser assertion to the approved RaksHex identity; preserve its
+purpose rather than skip or remove the test. No security modules are removed.

@@ -7,19 +7,19 @@ implemented here. Unknown = needs external/operational evidence.
 | Module / capability | Status | Evidence / missing gate | Priority |
 |---|---|---|---|
 | User JWT/password authentication | Partial | existing backend baseline; session/key/privacy hardening remains | P0 |
-| Workspaces and owner/admin/member/viewer | Partial | mutation protections verified locally; PG lock proof pending CI | P0 |
+| Workspaces and owner/admin/member/viewer | Partial | mutation protections verified locally; dedicated PostgreSQL row-lock CI passed | P0 |
 | Tenant isolation across all legacy modules | Pending | new analysis APIs scoped; global scanner/change paths remain | P0 |
 | Credential encryption/storage/rotation/revocation | Partial, release blocker | inherited custom cipher; review #248 + lifecycle | P0 |
 | Audit foundation | Partial | analysis actor/time/hashes; no central append-only ledger | P0 |
 | CI/database/deployment foundation | Partial | local builds/tests/SQLite round trip; CI/PG/deploy not verified | P0 |
-| Self-Repair authorized contract intake | Verified locally | consent/limits/roles/privacy/outage/readback tests; browser pending | P0 |
+| Self-Repair authorized contract intake | Verified locally | consent/limits/roles/privacy/outage/readback tests; real Self-Repair browser flow passed in CI | P0 |
 | Self-Repair change detection/provenance | Partial | manual pair hashes + ruleset; no upstream monitoring integration | P0 |
 | Full semantic contract/SDK analysis | Pending | bounded inline operation fingerprints only; refs rejected | P0 |
 | Source scope and impacted-callsite mapping | Pending | historical TS engine/fixtures to audit and reproduce | P0 |
 | Minimal patch generation | Pending | no fake patch or generic codegen substitution | P0 |
 | Isolated test/security validation | Pending | no customer-code runner activated | P0 |
 | Evidence-backed GitHub draft PR workflow | Pending | no installed app adapter; no merge automation | P0 |
-| Repair dashboard/history/errors | Partial | analysis workflow/UI tested; end-to-end repair pipeline absent | P0 |
+| Repair dashboard/history/errors | Partial | analysis workflow/UI and real browser flow verified; end-to-end repair pipeline absent | P0 |
 | Budget Lock workspace/user/agent/provider ceilings | Pending | legacy budgets retained; authoritative policy redesign needed | P1/P0 before money |
 | Atomic cumulative exposure, counts and reservations | Pending | PostgreSQL ledger needed | P0 before money |
 | Financial idempotency and unknown-outcome reconciliation | Pending | no real broker enabled | P0 before money |

@@ -81,3 +81,22 @@ credentials handled, no provider resources mutated, no merge or deployment done.
 
 Status: secure-core/analysis foundation implemented and locally tested; full RaksHex
 platform incomplete. Next engineering actions are in NEXT_ACTIONS.md.
+
+## Follow-up: truthful product page and browser regression
+The first remote Cypress run passed the actual new Self-Repair flow (workspace →
+consented analysis → persisted reload → owner deletion) and existing wiring, but
+failed one inherited dashboard assertion expecting v4.0 after the brand changed.
+The test now asserts RaksHex and Self-Repair navigation. Onboarding copy matches.
+Replaced the legacy landing page's unmeasured 40% savings/customer-adoption claims
+with the actual intake capabilities, privacy boundary, supported inputs and explicit
+planned-module statuses; updated all eight landing browser assertions accordingly.
+No security functionality was removed. Local frontend suite passed again (34 tests)
+and the production build/typecheck were rerun; backend code unchanged.
+
+Remote evidence for 62122a13: foundation PostgreSQL/migration job 118492124566 passed
+(1 PostgreSQL lock test, not skipped); backend job 118492314910 passed 203 tests
+with the optional local-PG test skipped there; full-stack PostgreSQL job 118492314917
+passed signup/session/scan/cost/onboarding/exports and WebSocket checks. Frontend
+and Cloudflare build jobs passed. Browser job 118492556654: 19 passed, 1 stale
+branding assertion failed; new Self-Repair spec passed. This failure was corrected,
+not waived, and needs the new-head CI run. See docs/verification/github-initial.json.

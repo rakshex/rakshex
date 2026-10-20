@@ -7,9 +7,12 @@
    pre-storage redaction (#249). Legacy change alerts need #240 review. New repair
    analysis scoping does not fix every legacy endpoint.
 3. PostgreSQL locking test is added with isolated schema and CI service, but local
-   PostgreSQL was unavailable. Local results use SQLite only.
+   PostgreSQL was unavailable. The dedicated remote PostgreSQL locking job passed;
+   full PostgreSQL migration/restore rehearsal is still required.
 4. Cypress and Playwright Chromium downloads returned truncated/non-ZIP archives.
-   Browser E2E is included but unrun; frontend unit tests/build do not replace it.
+   Browser E2E could not run locally; the new workflow passed remotely. The
+   first overall browser run failed one stale branding assertion, corrected in
+   the follow-up; the new-head complete rerun must be checked on the PR.
 5. Existing Node 20 engines versus Node 24 Cloudflare configuration/Vercel issue
    (#241) unresolved. Requirements are ranges, not a Python lockfile. Existing
    pytest custom event-loop fixture emits deprecation/unclosed-loop warnings.

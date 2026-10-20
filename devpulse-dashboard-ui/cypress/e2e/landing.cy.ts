@@ -1,52 +1,41 @@
 /// <reference types="cypress" />
 
-describe('DevPulse Landing Page', () => {
-  beforeEach(() => {
-    cy.visit('/landing');
-  });
+describe('RaksHex product page', () => {
+  beforeEach(() => cy.visit('/landing'));
 
-  it('loads the landing page with new positioning', () => {
-    cy.contains('Stop API Breaches').should('be.visible');
-    cy.contains('Cut AI Costs by 40%').should('be.visible');
+  it('presents the current API Change Intelligence direction', () => {
+    cy.contains('See what changed in your API contract.').should('be.visible');
+    cy.contains('Early implementation').should('be.visible');
   });
-
-  it('shows the three pillars', () => {
-    cy.contains('Three Pillars. One Platform.').should('exist');
-    cy.contains('AI API Security Scanner').should('exist');
-    cy.contains('API Cost Intelligence').should('exist');
-    cy.contains('VS Code Extension').should('exist');
+  it('links to the actual contract-analysis workflow', () => {
+    cy.contains('a','Analyze contracts').should('have.attr','href','/self-repair');
   });
-
-  it('shows stats bar', () => {
-    cy.contains('Token Patterns').should('exist');
-    cy.contains('Agent Attack Detectors').should('exist');
-    cy.contains('AI Models Priced').should('exist');
+  it('states what is available without pretending the repair pipeline is complete', () => {
+    cy.contains('Contract analysis available').should('be.visible');
+    cy.contains('Code impact, patch validation and GitHub draft PRs are next.').should('exist');
   });
-
-  it('shows pricing section', () => {
-    cy.contains('Simple, Transparent Pricing').should('exist');
-    cy.contains('Free').should('exist');
-    cy.contains('Pro').should('exist');
-    cy.contains('Team').should('exist');
+  it('shows the planned modules with explicit status', () => {
+    cy.contains('Budget Lock').should('exist');
+    cy.contains('LeakShield').should('exist');
+    cy.contains('Controlled agent execution').should('exist');
+    cy.contains('Security hardening pending').should('exist');
+    cy.contains('Separate design track').should('exist');
   });
-
-  it('shows how it works section', () => {
-    cy.contains('How It Works').should('exist');
-    cy.contains('Paste or Connect').should('exist');
-    cy.contains('Instant Scan').should('exist');
-    cy.contains('Fix & Optimize').should('exist');
+  it('explains the real intake workflow', () => {
+    cy.contains('1. Authorize processing').should('exist');
+    cy.contains('2. Compare operations').should('exist');
+    cy.contains('3. Review the evidence').should('exist');
   });
-
-  it('has CTA buttons', () => {
-    cy.contains('Scan Your Code Free').should('exist');
-    cy.contains('View on GitHub').should('exist');
+  it('explains the input and retention boundary', () => {
+    cy.contains('A clear processing boundary').should('exist');
+    cy.contains('not raw specifications').should('exist');
   });
-
-  it('shows v4.0 badge', () => {
-    cy.contains('v4.0').should('exist');
+  it('has no fabricated savings or customer claims', () => {
+    cy.contains('40%').should('not.exist');
+    cy.contains('Join teams using').should('not.exist');
+    cy.contains('Pricing and production release terms are not finalized.').should('exist');
   });
-
-  it('has correct footer branding', () => {
-    cy.contains('API Security & Cost Intelligence Platform').should('exist');
+  it('links to the correct development repository', () => {
+    cy.contains('a','View development source on GitHub').should('have.attr','href','https://github.com/rakshex/rakshex/tree/codex/rakshex-foundation-20261020');
   });
 });

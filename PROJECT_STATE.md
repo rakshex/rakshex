@@ -33,3 +33,13 @@ browser E2E, external integrations, operational rollback and production readines
 are NOT VERIFIED locally. No deployment, merge or production migration performed.
 Next: fix critical inherited crypto/scanner disclosure issues and validate the
 reviewed historical contract/impact/repair engine in isolation.
+
+## Remote review / follow-up verification
+Draft PR: https://github.com/rakshex/rakshex/pull/1 . Initial implementation commit:
+62122a13f7f88bad517f87eefb4adbd9d7c84828.
+GitHub CI verified the real PostgreSQL row lock (1 passed), isolated migration
+rehearsal, 203 backend tests, frontend/build, Cloudflare build and full-stack
+PostgreSQL smoke/WebSocket flow. The new Self-Repair Cypress workflow passed.
+The first complete browser run had 19 passes and one stale v4.0-branding assertion.
+That assertion and legacy landing-page claims were corrected in the follow-up;
+latest full CI rerun is tracked on the PR, independently of the earlier snapshot.

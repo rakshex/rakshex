@@ -1,0 +1,19 @@
+{
+  "name": "devpulse-monorepo",
+  "version": "4.0.0",
+  "private": true,
+  "workspaces": [
+    "devpulse-dashboard-ui"
+  ],
+  "scripts": {
+    "build": "cd devpulse-dashboard-ui && npm run build",
+    "dev": "cd devpulse-dashboard-ui && npm run dev",
+    "start": "cd devpulse-dashboard-ui && npm start",
+    "test": "cd devpulse-dashboard-ui && npm test",
+    "test:e2e": "cd devpulse-dashboard-ui && npm run test:e2e"
+  },
+  "engines": {
+    "node": "24.x",
+    "npm": "11.x"
+  }
+}

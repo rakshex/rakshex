@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-20",
+  "source_sha": "b8590fb0b408b10cbd06eb66be1caf30a39e8300",
+  "source_tree": "a56ad96fcbffc5be5dc1204ace5c346d546eb5f9",
+  "python": "3.12.14",
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "dependencies": {
+    "fastapi": "0.150.0",
+    "sqlalchemy": "2.1.5",
+    "pydantic": "2.14.0",
+    "pytest": "8.4.2",
+    "pytest-asyncio": "0.26.0",
+    "httpx": "0.28.1",
+    "alembic": "1.20.0"
+  },
+  "checks": {
+    "backend_baseline": {
+      "passed": 157
+    },
+    "backend_final": {
+      "passed": 203,
+      "skipped": 1,
+      "warnings": 3
+    },
+    "frontend_final": {
+      "passed": 34,
+      "suites": 9
+    },
+    "typecheck": "passed",
+    "frontend_build": "passed",
+    "sqlite_migration_round_trip": "passed",
+    "sqlite_parent_data_rehearsal": "passed",
+    "cloudflare_python": {
+      "passed": 4
+    },
+    "cloudflare_node": {
+      "passed": 3
+    },
+    "postgres_runtime": "not run: no local service",
+    "browser_e2e": "not run: binary downloads truncated"
+  },
+  "logs": {
+    "backend-baseline.log": {
+      "sha256": "b35e51548d30fc944fefbf811d0df8aab11facab7c50ec833e670aad118c7c4b",
+      "bytes": 2234
+    },
+    "backend-final.log": {
+      "sha256": "101df07db83396e1bbcff5bb035af27cf1ab73259f522585aa50aefa3433994e",
+      "bytes": 2244
+    },
+    "frontend-baseline.log": {
+      "sha256": "c2c2445e06da7aa88fcfaf01601427d556a7e7f679b62055cae6ea25078e6c94",
+      "bytes": 301
+    },
+    "frontend-final.log": {
+      "sha256": "b593a445328d28e34e86cf2ba5fd59aa2b3dd82a1fe04c574235d29f5e999f64",
+      "bytes": 301
+    },
+    "frontend-build.log": {
+      "sha256": "f759db36453c9879ea204a3da5640719a30cf413069d5ab8d654075530b8d02f",
+      "bytes": 1961
+    },
+    "foundation-final.log": {
+      "sha256": "189533f49b79c63f85c0e73a1cf9c0336104eb7e2e765ae42bf874bfef224d71",
+      "bytes": 2112
+    },
+    "migration-check.log": {
+      "sha256": "528de8cb699ec19b5d6fbbec70ad93425cede72f451262a0236dd4f89afc08ec",
+      "bytes": 1141
+    },
+    "migration-rehearsal.log": {
+      "sha256": "70791972f1661f11c11920f6e9aff84119a661c70e67cf829800d3a3f9ce10a5",
+      "bytes": 89
+    },
+    "typescript-final.log": {
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f",
+      "bytes": 99
+    },
+    "cypress-install.log": {
+      "sha256": "8b0050222cc0cc46c152b84022ed402476fafd603e6a18dfd7ffdcad4f9c58e8",
+      "bytes": 941
+    }
+  },
+  "remote_evidence": "github-initial.json (separate head-specific evidence)"
+}

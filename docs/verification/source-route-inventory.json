@@ -1,0 +1,609 @@
+{
+  "devpulse-backend/routes/__init__.py": [],
+  "devpulse-backend/routes/ai_security.py": [
+    {
+      "method": "post",
+      "path": "/scan/tokens",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/scan/agents",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/scan/owasp",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/scan/full",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/fix-suggestions",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/threat-feed",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/threats",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/threats/{threat_id}/resolve",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/inventory",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/score-history",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/alerts.py": [
+    {
+      "method": "post",
+      "path": "/api/alerts/configs",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/alerts/configs",
+      "auth": true
+    },
+    {
+      "method": "delete",
+      "path": "/api/alerts/configs/{config_id}",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/alerts/trigger",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/alerts/history",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/alerts/kill-switch/activate",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/alerts/kill-switch/deactivate",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/alerts/kill-switch",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/analytics.py": [
+    {
+      "method": "get",
+      "path": "/api/analytics/trends",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/analytics/breakdown",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/analytics/insights",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/analytics/forecast",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/analytics/track",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/auth.py": [
+    {
+      "method": "post",
+      "path": "/api/auth/register",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/auth/login",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/auth/me",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/billing.py": [
+    {
+      "method": "get",
+      "path": "/api/billing/plans",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/billing/subscribe",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/billing/status",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/billing/history",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/billing/cancel",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/billing/checkout",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/billing/portal",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/billing/webhook",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/budget.py": [
+    {
+      "method": "post",
+      "path": "/api/keys",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/keys",
+      "auth": true
+    },
+    {
+      "method": "put",
+      "path": "/api/keys/{key_id}",
+      "auth": true
+    },
+    {
+      "method": "delete",
+      "path": "/api/keys/{key_id}",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/budget",
+      "auth": true
+    },
+    {
+      "method": "put",
+      "path": "/api/budget/overall",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/budget/reset",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/budget/reset/{key_id}",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/changes.py": [
+    {
+      "method": "get",
+      "path": "/api/changes/alerts",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/changes/alerts/{alert_id}/ack",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/changes/history/{api_name}",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/changes/monitored",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/cicd.py": [
+    {
+      "method": "post",
+      "path": "/api/cicd/check",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/cicd/webhook",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/cicd/runs",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/cicd/badge/{pipeline_id}",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/compatibility.py": [
+    {
+      "method": "post",
+      "path": "/api/compatibility",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/compatibility/apis",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/compatibility/stats",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/compatibility/apis/details",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/cost_intelligence.py": [
+    {
+      "method": "get",
+      "path": "/models",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/calculate",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/breakdown",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/forecast",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/anomalies",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/optimization",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/roi",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/dashboard",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/budgets",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/budgets",
+      "auth": true
+    },
+    {
+      "method": "delete",
+      "path": "/budgets/{budget_id}",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/log",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/logs",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/custom_apis.py": [
+    {
+      "method": "post",
+      "path": "/api/custom/import",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/custom/apis",
+      "auth": true
+    },
+    {
+      "method": "delete",
+      "path": "/api/custom/apis/{api_id}",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/dashboard.py": [
+    {
+      "method": "get",
+      "path": "/health",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/dashboard",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/api-details",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/docs.py": [
+    {
+      "method": "post",
+      "path": "/api/docs",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/docs/health",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/generate.py": [
+    {
+      "method": "post",
+      "path": "/api/generate",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/generate/preview",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/history.py": [
+    {
+      "method": "get",
+      "path": "/api/history",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/history/stats",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/incidents.py": [
+    {
+      "method": "post",
+      "path": "/api/incidents",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/incidents",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/incidents/stats",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/incidents/{incident_id}",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/incidents/{incident_id}/event",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/incidents/{incident_id}/resolve",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/marketplace_routes.py": [
+    {
+      "method": "get",
+      "path": "/api/marketplace/templates",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/marketplace/templates/{template_id}",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/marketplace/templates",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/marketplace/templates/{template_id}/install",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/marketplace/templates/{template_id}/review",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/marketplace/stats",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/mock.py": [
+    {
+      "method": "get",
+      "path": "/api/mock/response/{api_name}",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/mock/responses",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/mock/generate",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/onboarding.py": [
+    {
+      "method": "post",
+      "path": "/api/onboarding/signup",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/onboarding/status",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/onboarding/complete",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/onboarding/trial-info",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/reports.py": [
+    {
+      "method": "get",
+      "path": "/api/reports/export",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/reports/summary",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/security.py": [
+    {
+      "method": "post",
+      "path": "/api/security/scan/code",
+      "auth": false
+    },
+    {
+      "method": "post",
+      "path": "/api/security/scan/api",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/security/scans",
+      "auth": false
+    }
+  ],
+  "devpulse-backend/routes/teams.py": [
+    {
+      "method": "post",
+      "path": "/api/teams/workspaces",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/teams/workspaces",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/teams/workspaces/{workspace_id}",
+      "auth": true
+    },
+    {
+      "method": "post",
+      "path": "/api/teams/workspaces/{workspace_id}/invite",
+      "auth": true
+    },
+    {
+      "method": "put",
+      "path": "/api/teams/workspaces/{workspace_id}/members/{user_id}/role",
+      "auth": true
+    },
+    {
+      "method": "delete",
+      "path": "/api/teams/workspaces/{workspace_id}/members/{user_id}",
+      "auth": true
+    },
+    {
+      "method": "get",
+      "path": "/api/teams/roles",
+      "auth": false
+    },
+    {
+      "method": "get",
+      "path": "/api/teams/workspaces/{workspace_id}/members",
+      "auth": true
+    }
+  ],
+  "devpulse-backend/routes/websocket.py": [
+    {
+      "method": "websocket",
+      "path": "/ws/health",
+      "auth": false
+    }
+  ]
+}

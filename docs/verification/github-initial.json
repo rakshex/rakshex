@@ -1,0 +1,39 @@
+{
+  "head_sha": "62122a13f7f88bad517f87eefb4adbd9d7c84828",
+  "pull_request": "https://github.com/rakshex/rakshex/pull/1",
+  "run_url": "https://github.com/rakshex/rakshex/actions/runs/39381787151",
+  "postgres_job": {
+    "id": 118492124566,
+    "conclusion": "success",
+    "tests_passed": 1,
+    "migration_rehearsal": "passed"
+  },
+  "backend_job": {
+    "id": 118492314910,
+    "conclusion": "success",
+    "passed": 203,
+    "skipped": 1
+  },
+  "full_stack_postgres_job": {
+    "id": 118492314917,
+    "conclusion": "success",
+    "verified": [
+      "signup/session",
+      "scan/history",
+      "costs/onboarding",
+      "CSV/docs",
+      "WebSocket handshake/refresh"
+    ]
+  },
+  "frontend_build": "success",
+  "cloudflare_build": "success",
+  "browser_job": {
+    "id": 118492556654,
+    "conclusion": "failure",
+    "passed": 19,
+    "failed": 1,
+    "self_repair_flow": "passed",
+    "failure": "inherited dashboard assertion expected removed v4.0 branding",
+    "follow_up": "assert current branding; remove unsupported landing claims; rerun CI"
+  }
+}

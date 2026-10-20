@@ -1,0 +1,57 @@
+# Next actions in dependency order
+
+1. Review this branch/import. Run GitHub CI, isolated PostgreSQL row-lock test and
+   actual Cypress browser flow. The dedicated PG job and Self-Repair browser flow
+   already passed remotely; verify the follow-up branding/landing rerun. Do not merge/deploy automatically.
+2. Review #248 and #249 independently; preserve ciphertext compatibility, add
+   standard authenticated encryption, redact before persistence/disclosure, scope
+   security findings to accepted workspace members. Resolve critical legacy issues.
+3. Audit PR #240 schema changes and migrations; integrate only after reconciling
+   Alembic heads with 20261020_repair_analysis; add PG up/down/re-up tests.
+4. Inspect `integration/self-repair-engine@083501a` and four yc13 branches at file
+   and test level. Reproduce oasdiff/CLI/static-impact benchmark cases in an isolated
+   environment. Do not import the old monorepo wholesale or assume sandbox success.
+5. Extend contract intake with supported parser/schema/SDK adapters and provenance;
+   unsupported coverage must stay explicit. Add Stripe and Firebase failing fixtures.
+6. Introduce consented repository/file scope, local impact scanner and minimization;
+   no private source access/model upload without explicit informed consent.
+7. Add narrow patch artifacts, isolated bounded no-secret test runner, before/after
+   evidence and failed-patch rejection; never execute untrusted code in API process.
+8. Implement least-privilege GitHub App draft-PR publisher; review permissions,
+   signed webhooks, replay, retries and scope. Human merge always required.
+9. Complete repair UI and real browser/device/error workflows. Reconcile Node
+   runtime, dependency locking, sessions, proxy trust, rate limits and logging.
+10. Build Budget Lock atomic PG ledger, principal/action policies, frozen status,
+    idempotency and reconciliation before enabling any test-mode broker mutation.
+11. Extend LeakShield/credential lifecycle and separately gated agent identity,
+    bound one-use approvals, live revocation and restricted Stripe test broker.
+12. Before production: privacy/retention/processing decisions, backup/restore and
+    staged deployment/rollback drills, observability and signed release review.
+
+Definition of done is the supplied feature matrix plus real end-to-end evidence;
+a working analysis screen is not a complete RaksHex release.
+
+## Security increment update — 2026-10-20
+
+Selected reviewed #248/#249 concepts are now integrated natively: standard AEAD writes,
+legacy read compatibility, metadata-only key lists, source minimization and scan evidence
+redaction. Legacy scanner/CI routes now authenticate and filter by account. Complete
+workspace policies and historical retention cleanup remain unresolved. See
+SECURITY_REMEDIATION.md; do not interpret the earlier item 2 as entirely complete.
+
+Prioritize remaining authorization/session boundaries, then the genuine repair runner
+and patch evidence. Mobile shell, a11y and measured performance remain open, not passed.
+
+## Following the implemented repair workflow
+
+1. Read final-head CI: actual Docker acceptance/isolation, PG migration/locks, full stack,
+   browser API flow, five viewport widths and automated accessibility checks.
+2. Provision a dedicated worker, reviewed immutable image, encryption master and scoped
+   DB connection; configure supervisor/lease recovery and retention/restore policies.
+3. Install a least-privilege GitHub App on the selected rakshex repository and bind it to
+   the workspace via operator configuration. Verify a real draft PR; never share App keys
+   through chat or browser. Connected ChatGPT GitHub access is not the backend App key.
+4. Extend adapters with separately verified real Stripe/Firebase/JS/TS migrations before
+   claiming coverage. Existing Python static-JSON support must remain explicit.
+5. Complete the remaining production security, legacy module and manual UX/performance
+   work listed in PRODUCTION_READINESS.md. Do not merge/deploy this draft automatically.

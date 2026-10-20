@@ -1,0 +1,49 @@
+# Root .gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+!devpulse-dashboard-ui/.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.eggs/
+venv/
+.venv/
+
+# Node
+node_modules/
+.next/
+.pnp.*
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build artifacts
+dist/
+build/
+out/
+
+# Clone directories (not part of this project)
+DevPulse-clone/
+harshita-clone/
+devpulse-dashboard-ui/harshita-clone/

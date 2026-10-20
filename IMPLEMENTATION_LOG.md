@@ -120,3 +120,9 @@ GitHub App draft publishing. Added a real API-driven RepairWorkbench, responsive
 keyboard navigation, confirmations, source consent and evidence review. Added synthetic
 regression fixtures, protocol/API/unit/container/browser/axe tests and worker operations
 documentation. Aligned frontend CI/runtime engines with Node 24 and pinned Cypress 16.1.1.
+
+Repair review follow-up: bound before/after contract fingerprints into job reports
+and worker checks, displayed migration provenance, and refused GitHub links/submodules/
+executable modes via immutable Git tree inspection. Corrected the existing browser
+request extractor to accept shorthand body properties; all 101 declared request
+contracts verify without removing checks.

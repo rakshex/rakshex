@@ -106,7 +106,8 @@ async def create_job(request:Request,user=Depends(require_auth)):
             except ValueError:raise HTTPException(503,'Repair artifact encryption is not configured') from None
             report={'adapter':plan['adapter'],'impacts':plan['impacts'],'scope':plan['scope'],
                     'repository':payload.repository,'source_root':payload.source_root,'base_branch':payload.base_branch,'base_sha':payload.base_sha,
-                    'source_hash':plan['source_hash'],'checks':{},'limitations':plan['limitations'],
+                    'source_hash':plan['source_hash'],'before_hash':digest(payload.before),'after_hash':digest(payload.after),
+                    'migration':{key:getattr(payload.rule,key) for key in ('removed','added','provenance')},'checks':{},'limitations':plan['limitations'],
                     'message':'Patch planned. Awaiting an isolated validation worker.'}
             row=RepairJob(id=job_id,workspace_id=payload.workspace_id,actor_id=user['id'],status='queued',sealed_bundle=sealed,patch_hash=plan['patch_hash'],report=report)
             session.add(row);await session.commit();await session.refresh(row)

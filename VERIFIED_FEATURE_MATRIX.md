@@ -1,36 +1,29 @@
-# Verified feature matrix — 2026-10-20
+# Current verified feature matrix — 2026-10-20
 
-Status describes bounded implemented behavior, not a product-wide guarantee. Consult TEST_RESULTS.md for revision-specific evidence.
+This describes implemented behavior and its exact coverage. Operator configuration,
+live external verification and production readiness are separate gates.
 
-| Feature | Status | Evidence / boundary |
+| Capability | Current implementation | Evidence / limits |
 |---|---|---|
-| Workspace roles and owner safeguards | Implemented and tested | Membership/owner concurrency tests; dedicated PostgreSQL CI exists |
-| Inline OpenAPI comparison | Implemented and tested | Consented, bounded upload; operation fingerprints; authorized persisted history and delete |
-| Complete Self-Repair | Incomplete | No integrated impact→patch→isolated test→draft PR pipeline |
-| Credential storage | Partial, security regression tested | Standard v2 writes and preserved legacy reads; metadata-only ordinary responses |
-| Credential lifecycle | Incomplete | No complete rotation, principal binding, live broker revocation or key management service |
-| Static security scan | Implemented heuristics | Actual submitted source scanned; redacted findings persisted; not comprehensive vulnerability assurance |
-| Scanner history/cache isolation | Account-scoped and tested | Legacy history and cached findings redacted; workspace policies pending |
-| CI security check | Implemented static rules | Budget/compatibility explicitly not_run; no repository test execution |
-| CI events | Partial | Authenticated signed event persistence and replay conflict; no provider App installation |
-| Budget Lock | Incomplete | Key limits are not atomic ledger enforcement/reconciliation |
-| LeakShield | Incomplete | Redaction is a prerequisite, not end-to-end provider revocation |
-| Premium responsive UX / accessibility | Incomplete | Existing shell/mobile/a11y review and repair required |
-| Production deployment | Not approved or performed | Main untouched; draft PR only |
+| Workspace roles/owner safeguards | Implemented | Transactional role rechecks and dedicated PostgreSQL locking tests |
+| Inline OpenAPI comparison | Implemented | Consented bounded inputs, operation fingerprints and workspace-scoped persisted history |
+| Python request impact analysis | Implemented | Explicit file scope and AST resolution of literal requests POST/PUT/PATCH JSON calls |
+| Repair patch generation | Implemented for this adapter | Schema-confirmed single property rename; deterministic diff; dynamic/rebound/semantic cases refused |
+| Source/patch evidence lifecycle | Implemented | Encrypted identity-bound job bundles; authorized artifact/history/delete; no model egress |
+| Isolated validation | Implemented and exercised in real Docker CI | Non-root, read-only, no network/forwarded secrets, pinned image, CPU/memory/PID/time/output limits; requires separate worker |
+| Acceptance gate | Implemented and container-tested | Baseline must fail; candidate passes; same nonzero test count; bad/empty/green-baseline/unrun checks reject |
+| Approval gate | Implemented | Current accepted admin/owner approves exact patch/report evidence; worker rechecks membership and contract/patch hashes |
+| GitHub App draft publisher | Implemented; live connection required | JWT, narrowed token, scoped source/test/base/tree-mode checks, retry/idempotency and no merge/force push; fake-HTTP protocol tests only until an App installation/key is supplied |
+| Repair workbench | Implemented | Consented manifest intake, persisted jobs, migration reference/fingerprints, diff/evidence review, guarded publish/delete; browser CI covers real API behavior |
+| Responsive navigation | Implemented | Mobile drawer, Escape/focus containment/return, desktop collapse padding, skip link and labels; 320/375/768/1024/1440 browser checks and automated axe checks added |
+| Credential storage | Implemented security increment | Standard AESGCM v2 writes and compatible authenticated legacy reads; metadata-only ordinary responses |
+| Credential lifecycle | Incomplete | Managed key IDs/rotation, live provider revocation and broker bindings remain |
+| Security scanner | Real static heuristics | Known-field redaction and account-scoped history/cache; not comprehensive vulnerability assurance or full workspace LeakShield |
+| Static CI security / signed events | Implemented bounded scope | Compatibility/budget explicitly not_run; no claim of repository test execution through that older endpoint |
+| JS/TS/Stripe/Firebase SDK and semantic repairs | Unsupported | Need separately verified adapters/rules/fixtures; Python test success does not establish provider compatibility |
+| Budget Lock / controlled broker | Incomplete | Atomic ledger, exposure, idempotency/reconciliation and execution-time controls not yet built |
+| Whole-product manual a11y/performance clearance | Incomplete | Automated repair-page checks are not a full screen-reader/Lighthouse/load audit |
+| Deployment | Not performed | Draft branch only; main unchanged; no application App key or worker deployment provisioned here |
 
-## Repair workflow increment — 2026-10-20 (supersedes earlier pipeline row)
-
-| Capability | Implemented boundary | Verification |
-|---|---|---|
-| Code impact and patch | Deterministic Python requests JSON-key rename, schema-confirmed, scoped AST locations/diff | New repair-engine tests; refuses dynamic/ambiguous calls |
-| Artifact lifecycle | Consented encrypted source/patch bundle, workspace history/read/delete | Real DB/API ownership tests |
-| Isolated tests | Separate Docker worker, pinned image, no network/credentials/host fallback, bounded resources/output/time | Dedicated real-container CI job; unavailable locally |
-| Acceptance gate | Baseline must fail; candidate must pass; same nonzero test count | Real-container CI plus negative cases |
-| Draft-PR publisher | Operator-bound GitHub App; admin exact-evidence approval; immutable snapshot/base checks; idempotent draft branch/PR | Fake-transport protocol tests; live App installation/key not available |
-| UI workflow | Source manifest, consent, jobs, exact diff, before/after evidence, guarded publish/delete | Unit tests and new real API browser flow |
-| Responsive shell | Mobile drawer, desktop collapse/padding, focus trap/Escape/restore, skip link | Five-viewport and axe browser checks added; verify CI results |
-
-This is a functional supported repair pipeline, not universal SDK repair. JS/TS,
-Stripe/Firebase adapters, semantic changes and full-repository test coverage remain
-unsupported. A separate worker and GitHub App connection are operator prerequisites,
-not evidence that this development environment has been deployed/connected.
+See TEST_RESULTS.md and the draft PR's immutable CI links for revision-specific results.
+See devpulse-backend/SELF_REPAIR_OPERATIONS.md for worker and GitHub App prerequisites.

@@ -6,7 +6,7 @@ import { apiFetch, apiRequest } from '@/lib/transport';
 type Workspace = {id:string;name:string;role:string};
 type Check = {status:string;tests:number;reason:string;output_hash:string;image:string};
 type Job = {id:string;status:string;patch_hash:string;evidence_hash:string;created_at:string;
-  report:{message:string;repository:string;base_sha:string;scope:string[];impacts:{file:string;line:number;kind:string}[];
+  report:{migration?:{removed:string;added:string;provenance:string};before_hash?:string;after_hash?:string;message:string;repository:string;base_sha:string;scope:string[];impacts:{file:string;line:number;kind:string}[];
     checks:{accepted?:boolean;before?:Check;after?:Check};limitations:string[];publication?:{url:string}}};
 const field='mt-1 w-full min-w-0 rounded-lg border border-zinc-700 bg-zinc-950 p-3 text-sm text-zinc-100 focus-visible:outline-2 focus-visible:outline-blue-400';
 const button='rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 disabled:opacity-50';
@@ -71,7 +71,7 @@ export default function RepairWorkbench(){
         <p className="text-sm text-zinc-400">Include before/after inline OpenAPI contracts, files (relative .py path → source, including tests/test_*.py), repository, optional source_root, base_branch, immutable base_sha and rule (method, path, origin, removed, added, provenance). The source must match the repository commit before a PR can be published.</p>
         <label className="block text-sm">Load manifest JSON<input className="mt-2 block w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-800 file:p-2" type="file" accept=".json,application/json" disabled={pending} onChange={async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>786432){setError('Manifest exceeds 768 KiB.');return;}setManifest(await file.text());setConsent(false);e.target.value='';}}/></label>
         <label className="block text-sm">Repair manifest<textarea className={`${field} font-mono`} rows={12} value={manifest} onChange={e=>{setManifest(e.target.value);setConsent(false);}} required disabled={pending} spellCheck={false}/></label>
-        <p className="text-sm text-zinc-400">Scoped source and patch are encrypted on the server until you delete the job. Tests run on a separate worker with no network or credentials. No source is sent to a model. Avoid submitting secrets. Authorized workspace members can review the diff.</p>
+        <p className="text-sm text-zinc-400">Submitted contracts, scoped source and patch are encrypted on the server until you delete the job. Tests run on a separate worker with no network or credentials. No source is sent to a model. Avoid submitting secrets. Authorized workspace members can review the diff.</p>
         <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" required checked={consent} disabled={pending} onChange={e=>setConsent(e.target.checked)}/>I am authorized to submit these files and consent to encrypted storage and isolated test execution.</label>
         <button className={button} disabled={pending||!consent||!manifest.trim()}>{pending?'Submitting…':'Plan repair and queue validation'}</button>
       </form>:<p>Your workspace role can review evidence but cannot submit repairs.</p>}
@@ -81,6 +81,8 @@ export default function RepairWorkbench(){
         {!jobs.length?<p className="text-zinc-400">No repair jobs in this workspace yet.</p>:jobs.map(job=><article key={job.id} className="min-w-0 space-y-3 rounded-xl border border-zinc-800 p-4 sm:p-6">
           <div className="flex flex-wrap justify-between gap-2"><h4 className="break-all font-medium">{job.report.repository}</h4><span role="status" className="rounded bg-zinc-800 px-2 py-1 text-xs">{job.status.replaceAll('_',' ')}</span></div>
           <p className="text-sm">{job.report.message}</p>
+          {job.report.migration&&<p className="text-sm text-zinc-300">Proposed migration: <code>{job.report.migration.removed}</code> → <code>{job.report.migration.added}</code>. <a className="text-blue-300 underline" href={job.report.migration.provenance} target="_blank" rel="noopener noreferrer">Review migration reference</a></p>}
+          {job.report.before_hash&&<p className="break-all text-xs text-zinc-400">Contract fingerprints: {job.report.before_hash} → {job.report.after_hash}</p>}
           <p className="break-all text-xs text-zinc-400">Base commit: {job.report.base_sha}<br/>Patch SHA-256: {job.patch_hash}</p>
           <ul className="space-y-1 text-sm">{job.report.impacts.map((impact,i)=><li className="break-all" key={i}>{impact.file}:{impact.line} — request property rename</li>)}</ul>
           {job.report.checks.before&&job.report.checks.after&&<div className="grid gap-3 sm:grid-cols-2">{(['before','after'] as const).map(stage=>{const check=job.report.checks[stage]!;return <div className="rounded-lg bg-zinc-900 p-3 text-sm" key={stage}><strong>{stage==='before'?'Baseline':'Candidate'}: {check.status}</strong><p>{check.tests} tests · {check.reason}</p><p className="mt-1 break-all text-xs text-zinc-400">Output fingerprint: {check.output_hash}</p></div>;})}</div>}

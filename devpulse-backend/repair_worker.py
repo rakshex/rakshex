@@ -32,6 +32,8 @@ async def process_one(job_id=None):
             payload=bundle['input'];plan=plan_repair(payload['before'],payload['after'],payload['files'],payload['rule'])
             if digest(plan)!=digest(bundle['plan']) or plan['patch_hash']!=row.patch_hash:raise ValueError('integrity')
             report=copy.deepcopy(row.report)
+            if report.get('before_hash')!=digest(payload['before']) or report.get('after_hash')!=digest(payload['after']):
+                raise ValueError('contract binding')
             if publication:
                 expected=digest({'patch_hash':row.patch_hash,'report':report})
                 if row.approval_hash!=expected:raise ValueError('approval')

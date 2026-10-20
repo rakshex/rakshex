@@ -52,3 +52,11 @@ property in the existing TypeScript request extractor before any Cypress test ra
 Fixed its property-assignment guard without disabling checks; rerunning full browser CI.
 Added publisher tree-mode verification to refuse symlinks/submodules/executable files;
 its protocol tests passed (10). Final-head results are recorded in the PR.
+
+### Evidence-review follow-up
+
+Added contract fingerprints and the public migration reference to job evidence/UI;
+the worker rechecks the contract hashes before execution or publication. Final local
+repair/publisher suite: **32 passed, 4 Docker-only skips**, 3 warnings (9.16s).
+TypeScript passed. Container/browser CI is rerun for the pushed final tree; read the
+PR's final-head links instead of treating prior runs as verification of later changes.

@@ -29,6 +29,7 @@ from services.database import (
     resolve_threat_event,
 )
 from services.cache import cache_get, cache_set, security_scan_key, make_code_hash
+from services.security_evidence import redact_scan_evidence
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,8 @@ class ScanRequest(BaseModel):
 
 class FixRequest(BaseModel):
     code: str = Field(..., min_length=1, max_length=500_000)
-    findings: list = Field(default_factory=list)
+    findings: list = Field(default_factory=list, max_length=100)
+    model_processing_consent: bool = False
 
 
 # ── Endpoints ───────────────────────────────────────────────────────────────
@@ -56,7 +58,7 @@ async def scan_tokens_endpoint(req: ScanRequest, user=Depends(require_auth)):
         result = scan_token_leaks(req.code)
         return {"status": "ok", **result}
     except Exception as e:
-        logger.error(f"Token scan failed: {e}")
+        logger.error("Token scan failed (%s)", type(e).__name__)
         raise HTTPException(500, "Token scan failed")
 
 
@@ -67,7 +69,7 @@ async def scan_agents_endpoint(req: ScanRequest, user=Depends(require_auth)):
         result = scan_agent_attacks(req.code)
         return {"status": "ok", **result}
     except Exception as e:
-        logger.error(f"Agent scan failed: {e}")
+        logger.error("Agent scan failed (%s)", type(e).__name__)
         raise HTTPException(500, "Agent attack scan failed")
 
 
@@ -78,7 +80,7 @@ async def scan_owasp_endpoint(req: ScanRequest, user=Depends(require_auth)):
         result = scan_owasp_api(req.code)
         return {"status": "ok", **result}
     except Exception as e:
-        logger.error(f"OWASP scan failed: {e}")
+        logger.error("OWASP scan failed (%s)", type(e).__name__)
         raise HTTPException(500, "OWASP scan failed")
 
 
@@ -86,12 +88,16 @@ async def scan_owasp_endpoint(req: ScanRequest, user=Depends(require_auth)):
 async def full_scan_endpoint(req: ScanRequest, user=Depends(require_auth)):
     """Cache only evaluation; every requested scan persists to the caller's history."""
     try:
-        key = security_scan_key(make_code_hash(req.language + "\n" + req.code))
+        key = security_scan_key(make_code_hash(str(user["id"]) + "\n" + req.language + "\n" + req.code))
         result = await cache_get(key)
         cached = result is not None
         if result is None:
             result = full_security_scan(req.code, req.language)
+            result = redact_scan_evidence(result)
             await cache_set(key, result, ttl=300)
+        # Old cache entries may predate source redaction. Copy before returning
+        # or persisting them; do not assume every cache value is already safe.
+        result = redact_scan_evidence(result)
         counts = {severity: 0 for severity in ("critical", "high", "medium", "low")}
         for finding in result.get("all_findings", []):
             severity = finding.get("severity", "medium").lower()
@@ -107,8 +113,8 @@ async def full_scan_endpoint(req: ScanRequest, user=Depends(require_auth)):
         return {"status": "ok", **result, "scan_id": scan_id, "cached": cached,
                 "critical_count": counts["critical"], "high_count": counts["high"],
                 "medium_count": counts["medium"], "low_count": counts["low"]}
-    except Exception:
-        logger.exception("Full scan or persistence failed")
+    except Exception as exc:
+        logger.error("Full scan or persistence failed (%s)", type(exc).__name__)
         raise HTTPException(500, "Full security scan could not be saved")
 
 
@@ -116,14 +122,14 @@ async def full_scan_endpoint(req: ScanRequest, user=Depends(require_auth)):
 async def fix_suggestions_endpoint(req: FixRequest, user=Depends(require_auth)):
     """Generate AI-powered fix suggestions for security findings."""
     try:
-        suggestions = await generate_fix_suggestions(req.findings, req.code)
+        suggestions = await generate_fix_suggestions(req.findings, req.code, allow_model=req.model_processing_consent)
         return {
             "status": "ok",
             "suggestions": suggestions,
             "total": len(suggestions),
         }
     except Exception as e:
-        logger.error(f"Fix suggestions failed: {e}")
+        logger.error("Fix suggestions failed (%s)", type(e).__name__)
         raise HTTPException(500, "Fix suggestion generation failed")
 
 
@@ -191,7 +197,7 @@ async def api_inventory_endpoint(req: ScanRequest, user=Depends(require_auth)):
         result = scan_api_inventory(req.code)
         return {"status": "ok", **result}
     except Exception as e:
-        logger.error(f"Inventory scan failed: {e}")
+        logger.error("Inventory scan failed (%s)", type(e).__name__)
         raise HTTPException(500, "API inventory scan failed")
 
 

@@ -31,8 +31,8 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 def _send(to_email: str, subject: str, html_content: str) -> bool:
     """Send an email via SendGrid. Returns True on success."""
     if not SENDGRID_AVAILABLE or not SENDGRID_API_KEY:
-        logger.info("Email stub → to=%s subject=%s", to_email, subject)
-        return True  # stub success
+        logger.info("Email unavailable: provider is not configured")
+        return False
 
     try:
         message = Mail(
@@ -46,7 +46,7 @@ def _send(to_email: str, subject: str, html_content: str) -> bool:
         logger.info("Email sent to %s – status %s", to_email, response.status_code)
         return response.status_code in (200, 201, 202)
     except Exception as e:
-        logger.error("SendGrid error: %s", e)
+        logger.error("SendGrid delivery failed (%s)", type(e).__name__)
         return False
 
 

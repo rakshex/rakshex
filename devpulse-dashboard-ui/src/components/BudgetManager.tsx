@@ -66,9 +66,9 @@ function AddKeyModal({ onClose, onAdd }: { onClose: () => void; onAdd: () => voi
         key_name: form.key_name,
         api_provider: form.api_provider,
         api_key: form.api_key,
-        budget_limit: form.budget_limit ? parseFloat(form.budget_limit) : null,
+        budget_limit: form.budget_limit ? parseFloat(form.budget_limit) : 0,
         budget_period: form.budget_period,
-        call_limit: form.call_limit ? parseInt(form.call_limit) : null,
+        call_limit: form.call_limit ? parseInt(form.call_limit) : 0,
       });
       if (res.status === 'success') {
         onAdd();
@@ -203,9 +203,9 @@ function EditKeyModal({ keyInfo, onClose, onSave }: { keyInfo: ApiKeyInfo; onClo
     try {
       await apiClient.updateApiKey(keyInfo.id, {
         key_name: form.key_name,
-        budget_limit: form.budget_limit ? parseFloat(form.budget_limit) : null,
+        budget_limit: form.budget_limit ? parseFloat(form.budget_limit) : 0,
         budget_period: form.budget_period,
-        call_limit: form.call_limit ? parseInt(form.call_limit) : null,
+        call_limit: form.call_limit ? parseInt(form.call_limit) : 0,
         is_active: form.is_active,
       });
       onSave();

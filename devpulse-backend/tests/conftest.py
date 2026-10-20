@@ -7,6 +7,7 @@ Creates tables once per session, truncates between tests for isolation.
 import asyncio
 import os
 import sys
+import tempfile
 from typing import AsyncGenerator, Dict, Any
 
 import pytest
@@ -18,7 +19,8 @@ from httpx import AsyncClient, ASGITransport
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 # ── Force SQLite for test runs ───────────────────────────────────────────────
-os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///"
+_test_database_dir = tempfile.TemporaryDirectory(prefix="rakshex-tests-")
+os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///" + os.path.join(_test_database_dir.name, "tests.db")
 os.environ["REDIS_URL"] = ""       # disable Redis; use in-memory fallback
 os.environ["ENV"] = "test"
 
@@ -42,6 +44,7 @@ async def db():
     await init_db()
     yield
     await close_db()
+    _test_database_dir.cleanup()
 
 
 @pytest_asyncio.fixture(autouse=True)

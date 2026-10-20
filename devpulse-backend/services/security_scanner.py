@@ -91,7 +91,8 @@ def scan_code(code: str, language: str = "python") -> Dict[str, Any]:
                     "title": rule["title"],
                     "description": rule["description"],
                     "line_number": i + 1,
-                    "matched_text": match.group()[:100],
+                    "matched_text": "[REDACTED]",
+                    "column": match.start() + 1,
                     "recommendation": rule["recommendation"],
                 })
 
@@ -133,7 +134,7 @@ def scan_api_config(url: str, headers: Dict[str, str] = None) -> Dict[str, Any]:
         for key, val in headers.items():
             if any(s in key.lower() for s in ("key", "secret", "token", "password")):
                 if len(val) < 16:
-                    issues.append({"severity": "high", "issue": f"Short credential in header '{key}'",
+                    issues.append({"severity": "high", "issue": "Short credential in a sensitive header",
                                     "fix": "Use strong, randomly generated credentials (32+ chars)"})
 
     score = max(0, 100 - len(issues) * 20)

@@ -14,17 +14,16 @@ Endpoints:
 import logging
 from typing import Dict, Any, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field, field_validator
 
 from routes.auth import require_auth
 from services.encryption import (
-    encrypt_aes256,
-    decrypt_aes256,
     mask_api_key,
     validate_api_key_format,
     sanitize_for_storage,
 )
+from services.storage_crypto import encrypt_for_storage
 from services.database import (
     add_api_key,
     get_api_keys,
@@ -114,17 +113,15 @@ class SetOverallBudgetRequest(BaseModel):
 # API KEY ENDPOINTS
 # =============================================================================
 
-@router.post("/api/keys")
+@router.post("/api/keys", status_code=201)
 async def create_api_key(req: AddApiKeyRequest, user: Dict = Depends(require_auth)) -> Dict[str, Any]:
     """Add a new API key with optional budget limit. Key is encrypted with AES-256."""
+    is_valid, error_msg = validate_api_key_format(req.api_key, req.api_provider)
+    if not is_valid:
+        raise HTTPException(422, error_msg)
     try:
-        # Validate API key format
-        is_valid, error_msg = validate_api_key_format(req.api_key, req.api_provider)
-        if not is_valid:
-            return {"status": "error", "message": error_msg}
-        
-        # Encrypt the API key with AES-256
-        encrypted_key = encrypt_aes256(req.api_key)
+        # Encrypt new records with standard authenticated encryption
+        encrypted_key = await encrypt_for_storage(req.api_key)
         
         key_id = await add_api_key(
             user_id=user["id"],
@@ -143,17 +140,17 @@ async def create_api_key(req: AddApiKeyRequest, user: Dict = Depends(require_aut
                 "id": key_id,
                 "key_name": req.key_name,
                 "api_provider": req.api_provider,
-                "masked_key": mask_api_key(req.api_key),
+                "masked_key": "••••••••",
                 "budget_limit": req.budget_limit,
                 "budget_period": req.budget_period,
                 "call_limit": req.call_limit,
             }
         }
-    except ValueError as e:
-        return {"status": "error", "message": str(e)}
+    except ValueError:
+        raise HTTPException(503, "Credential encryption configuration is unavailable") from None
     except Exception as e:
-        logger.error(f"Failed to add API key: {e}")
-        return {"status": "error", "message": "Failed to add API key"}
+        logger.error("Failed to add API key (%s)", type(e).__name__)
+        raise HTTPException(503, "Credential could not be saved") from None
 
 
 @router.get("/api/keys")
@@ -168,7 +165,7 @@ async def list_api_keys(user: Dict = Depends(require_auth)) -> Dict[str, Any]:
             "count": len(keys),
         }
     except Exception as e:
-        logger.error(f"Failed to list API keys: {e}")
+        logger.error("Failed to list API keys (%s)", type(e).__name__)
         return {"status": "error", "keys": [], "count": 0, "message": "Failed to fetch keys"}
 
 
@@ -203,7 +200,7 @@ async def update_key(
         
         return {"status": "success", "message": "API key updated successfully"}
     except Exception as e:
-        logger.error(f"Failed to update API key: {e}")
+        logger.error("Failed to update API key (%s)", type(e).__name__)
         return {"status": "error", "message": "Failed to update API key"}
 
 
@@ -218,7 +215,7 @@ async def remove_key(key_id: int, user: Dict = Depends(require_auth)) -> Dict[st
         
         return {"status": "success", "message": "API key deleted successfully"}
     except Exception as e:
-        logger.error(f"Failed to delete API key: {e}")
+        logger.error("Failed to delete API key (%s)", type(e).__name__)
         return {"status": "error", "message": "Failed to delete API key"}
 
 
@@ -233,7 +230,7 @@ async def get_budget(user: Dict = Depends(require_auth)) -> Dict[str, Any]:
         summary = await get_budget_summary(user["id"])
         return summary
     except Exception as e:
-        logger.error(f"Failed to get budget: {e}")
+        logger.error("Failed to get budget (%s)", type(e).__name__)
         return {"status": "error", "message": "Failed to fetch budget summary"}
 
 
@@ -264,7 +261,7 @@ async def update_overall_budget(
             }
         }
     except Exception as e:
-        logger.error(f"Failed to set overall budget: {e}")
+        logger.error("Failed to set overall budget (%s)", type(e).__name__)
         return {"status": "error", "message": "Failed to update budget"}
 
 
@@ -275,7 +272,7 @@ async def reset_all_budgets(user: Dict = Depends(require_auth)) -> Dict[str, Any
         await reset_budget(user["id"])
         return {"status": "success", "message": "All budget counters reset to zero"}
     except Exception as e:
-        logger.error(f"Failed to reset budgets: {e}")
+        logger.error("Failed to reset budgets (%s)", type(e).__name__)
         return {"status": "error", "message": "Failed to reset budgets"}
 
 
@@ -286,5 +283,5 @@ async def reset_key_budget(key_id: int, user: Dict = Depends(require_auth)) -> D
         await reset_budget(user["id"], key_id=key_id)
         return {"status": "success", "message": "Key budget counter reset to zero"}
     except Exception as e:
-        logger.error(f"Failed to reset key budget: {e}")
+        logger.error("Failed to reset key budget (%s)", type(e).__name__)
         return {"status": "error", "message": "Failed to reset key budget"}

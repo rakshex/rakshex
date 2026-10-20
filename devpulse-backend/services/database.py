@@ -14,9 +14,10 @@ import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional, Tuple
 
-from sqlalchemy import select, update, delete, func, and_, or_, desc, asc, text
+from sqlalchemy import select, update, delete, func, and_, or_, desc, asc, text, null
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from services.security_evidence import redact_scan_evidence
 
 from services.db_config import (
     AsyncSessionLocal,
@@ -53,7 +54,14 @@ def _row_to_dict(obj) -> Dict[str, Any]:
         # Convert datetime to ISO string (matches SQLite behaviour)
         if isinstance(val, datetime):
             val = val.isoformat()
+        if isinstance(obj, (SecurityScan, AiSecurityScan, CicdRun)) and c.name.endswith("_json"):
+            val = redact_scan_evidence(val)
+        if isinstance(obj, ApiKey) and c.name == "encrypted_key":
+            continue
         d[c.name] = val
+    if isinstance(obj, ApiKey):
+        d["masked_key"] = "••••••••"
+        d["encryption_version"] = "v2" if obj.encrypted_key.startswith("v2:") else "legacy"
     return d
 
 
@@ -211,7 +219,7 @@ async def get_usage_stats(user_id: Optional[int] = None,
 
 async def add_api_key(user_id: int, key_name: str, api_provider: str,
                       encrypted_key: str, budget_limit: float = 0,
-                      call_limit: int = 0) -> int:
+                      call_limit: int = 0, budget_period: str = "monthly") -> int:
     """Store a new API key. Returns the key id."""
     async with AsyncSessionLocal() as session:
         key = ApiKey(
@@ -220,6 +228,7 @@ async def add_api_key(user_id: int, key_name: str, api_provider: str,
             api_provider=api_provider,
             encrypted_key=encrypted_key,
             budget_limit=budget_limit,
+            budget_period=budget_period,
             call_limit=call_limit,
         )
         session.add(key)
@@ -606,7 +615,7 @@ async def save_security_scan(user_id: Optional[int], scan_type: str, target: str
             score=score,
             grade=grade,
             total_issues=total_issues,
-            results_json=parsed,
+            results_json=redact_scan_evidence(parsed),
         )
         session.add(obj)
         await session.commit()
@@ -614,13 +623,13 @@ async def save_security_scan(user_id: Optional[int], scan_type: str, target: str
         return obj.id
 
 
-async def get_security_scans(user_id: Optional[int] = None,
+async def get_security_scans(user_id: int,
                              limit: int = 20) -> List[Dict[str, Any]]:
     """Get past security scans."""
     async with AsyncSessionLocal() as session:
-        stmt = select(SecurityScan)
-        if user_id is not None:
-            stmt = stmt.where(SecurityScan.user_id == user_id)
+        stmt = select(SecurityScan).where(SecurityScan.user_id == user_id)
+        if user_id is None:
+            return []
         stmt = stmt.order_by(desc(SecurityScan.created_at)).limit(limit)
         result = await session.execute(stmt)
         return [_row_to_dict(r) for r in result.scalars().all()]
@@ -1230,8 +1239,8 @@ async def save_cicd_run(run_id: str, pipeline_id: str, repo: str, branch: str,
             gate_result=gate_result,
             security_score=security_score,
             compatibility_score=compatibility_score,
-            budget_ok=budget_ok,
-            details_json=details,
+            budget_ok=budget_ok if budget_ok is not None else null(),
+            details_json=redact_scan_evidence(details),
             triggered_by=triggered_by,
         )
         session.add(obj)
@@ -1240,10 +1249,10 @@ async def save_cicd_run(run_id: str, pipeline_id: str, repo: str, branch: str,
 
 
 async def get_cicd_runs_db(limit: int = 20,
-                           pipeline_id: Optional[str] = None) -> List[Dict[str, Any]]:
+                           pipeline_id: Optional[str] = None, *, actor_id: int) -> List[Dict[str, Any]]:
     """Get CI/CD run history."""
     async with AsyncSessionLocal() as session:
-        stmt = select(CicdRun)
+        stmt = select(CicdRun).where(CicdRun.triggered_by == f"user:{actor_id}")
         if pipeline_id:
             stmt = stmt.where(CicdRun.pipeline_id == pipeline_id)
         stmt = stmt.order_by(desc(CicdRun.created_at)).limit(limit)
@@ -1251,6 +1260,7 @@ async def get_cicd_runs_db(limit: int = 20,
         rows = []
         for r in result.scalars().all():
             d = _row_to_dict(r)
+            d["status"] = d["gate_result"]
             dj = d.get("details_json")
             if isinstance(dj, str):
                 try:
@@ -1593,9 +1603,9 @@ async def save_ai_security_scan(
             high_count=high_count,
             medium_count=medium_count,
             low_count=low_count,
-            results_json=results_json or {},
-            fix_suggestions_json=fix_suggestions_json or [],
-            owasp_results_json=owasp_results_json or {},
+            results_json=redact_scan_evidence(results_json or {}),
+            fix_suggestions_json=redact_scan_evidence(fix_suggestions_json or []),
+            owasp_results_json=redact_scan_evidence(owasp_results_json or {}),
         )
         session.add(obj)
         await session.commit()

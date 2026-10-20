@@ -35,3 +35,11 @@
 11. Existing dashboard shell has limited mobile navigation; full responsive/accessibility
     review remains required. New form uses accessible labels and responsive columns,
     but browser/device verification is pending.
+
+## Security increment limitations
+
+See SECURITY_REMEDIATION.md and PRODUCTION_READINESS.md. Account-scoped legacy scans are
+not workspace-scoped LeakShield. Existing historical sensitive evidence is not erased.
+No managed rotation, sandbox runner, full repair pipeline, atomic budget broker, complete
+mobile/a11y or measured performance clearance exists. Custom pytest event-loop fixture
+emits deprecation warnings and should be modernized without changing test isolation.

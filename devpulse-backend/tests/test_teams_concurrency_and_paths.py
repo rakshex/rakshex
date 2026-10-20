@@ -129,3 +129,22 @@ async def test_pending_admin_cannot_mutate_directly(team):
 async def test_missing_role_cannot_clear_membership_role(team):
     ids, _ = team
     assert (await dbm.apply_team_member_change(WS, ids['owner'], ids['member'], 'set_role'))[0] == 'forbidden'
+
+
+@pytest.mark.asyncio
+async def test_reader_rollback_cannot_erase_another_session_write(team):
+    """Independent sessions must not share one in-memory SQLite transaction."""
+    ids, _ = team
+    async with AsyncSessionLocal() as writer:
+        row = (await writer.execute(dbm.select(TeamMember).where(
+            TeamMember.team_id == WS, TeamMember.user_id == ids['admin']))).scalar_one()
+        row.role = 'viewer'
+        await writer.flush()
+        async with AsyncSessionLocal() as reader:
+            other = (await reader.execute(dbm.select(TeamMember).where(
+                TeamMember.team_id == WS, TeamMember.user_id == ids['admin']))).scalar_one()
+            assert other.role == 'admin', 'Readers must not observe another session uncommitted writes'
+        await writer.commit()
+    async with AsyncSessionLocal() as reader:
+        assert (await reader.execute(dbm.select(TeamMember.role).where(
+            TeamMember.team_id == WS, TeamMember.user_id == ids['admin']))).scalar_one() == 'viewer'

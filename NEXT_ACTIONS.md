@@ -30,3 +30,14 @@
 
 Definition of done is the supplied feature matrix plus real end-to-end evidence;
 a working analysis screen is not a complete RaksHex release.
+
+## Security increment update — 2026-10-20
+
+Selected reviewed #248/#249 concepts are now integrated natively: standard AEAD writes,
+legacy read compatibility, metadata-only key lists, source minimization and scan evidence
+redaction. Legacy scanner/CI routes now authenticate and filter by account. Complete
+workspace policies and historical retention cleanup remain unresolved. See
+SECURITY_REMEDIATION.md; do not interpret the earlier item 2 as entirely complete.
+
+Prioritize remaining authorization/session boundaries, then the genuine repair runner
+and patch evidence. Mobile shell, a11y and measured performance remain open, not passed.

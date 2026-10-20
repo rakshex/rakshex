@@ -21,3 +21,11 @@ Follow-up on 2026-10-20: replace unsupported legacy landing-page savings/adoptio
 claims with accurate current capabilities and roadmap statuses. Update the inherited
 v4.0 branding browser assertion to the approved RaksHex identity; preserve its
 purpose rather than skip or remove the test. No security modules are removed.
+
+## Native credential storage and bounded security scope
+
+Reuse reviewed PR #248/#249 behavior selectively in the active FastAPI runtime, not the
+old edge/monorepo runtime. Preserve legacy authenticated reads and require explicit
+review before any persistent ciphertext migration. Treat scanners as static heuristics
+and CI budget/compatibility as not_run. Make account ownership explicit without claiming
+workspace policy coverage. Preserve an honest incomplete product state.

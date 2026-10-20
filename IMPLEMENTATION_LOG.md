@@ -100,3 +100,13 @@ passed signup/session/scan/cost/onboarding/exports and WebSocket checks. Fronten
 and Cloudflare build jobs passed. Browser job 118492556654: 19 passed, 1 stale
 branding assertion failed; new Self-Repair spec passed. This failure was corrected,
 not waived, and needs the new-head CI run. See docs/verification/github-initial.json.
+
+## 2026-10-20 — targeted security increment
+
+Replaced misleading custom-cipher writes with native AESGCM v2 and retained authenticated
+legacy reads without automatic data migration. Removed ciphertext from ordinary key
+serialization, fixed budget-period persistence and blank UI limits. Authenticated/scoped
+legacy scanners and CI; added signed, replay-conflict CI events; redacted known scan fields
+at output/cache/storage boundaries and minimized opt-in suggestion prompts. Startup database
+failure is fatal and unconfigured email no longer reports delivery. Added synthetic security
+regressions and an independent-connection SQLite rollback regression. See TEST_RESULTS.md.

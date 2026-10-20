@@ -61,6 +61,9 @@ from routes.onboarding import router as onboarding_router
 from routes.ai_security import router as ai_security_router
 from routes.cost_intelligence import router as cost_intelligence_router
 
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
 from middleware.security import SecurityHeadersMiddleware, InputSanitizationMiddleware
 from middleware.rate_limit import RateLimitMiddleware
 
@@ -133,7 +136,8 @@ async def lifespan(app: FastAPI):
         await init_db()
         logger.info("Database initialized")
     except Exception as e:
-        logger.error(f"Database init failed: {type(e).__name__}: {e}")
+        logger.error("Database initialization failed (%s)", type(e).__name__)
+        raise RuntimeError("Database initialization failed; startup refused") from None
 
     print_startup_banner(port)
 
@@ -177,6 +181,12 @@ app = FastAPI(
     version="4.0.0",
     lifespan=lifespan,
 )
+
+@app.exception_handler(RequestValidationError)
+async def safe_validation_error(request, exc):
+    # Pydantic error input/context can contain credentials or uploaded source.
+    return JSONResponse(status_code=422, content={"detail": "Request validation failed. Check required fields and allowed formats."})
+
 
 # Attach rate limiter
 app.state.limiter = limiter

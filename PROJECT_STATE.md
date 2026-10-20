@@ -43,3 +43,9 @@ PostgreSQL smoke/WebSocket flow. The new Self-Repair Cypress workflow passed.
 The first complete browser run had 19 passes and one stale v4.0-branding assertion.
 That assertion and legacy landing-page claims were corrected in the follow-up;
 latest full CI rerun is tracked on the PR, independently of the earlier snapshot.
+
+## Security increment — 2026-10-20
+
+Targeted credential/scanner/CI fixes and synthetic regressions added; see
+SECURITY_REMEDIATION.md, VERIFIED_FEATURE_MATRIX.md and TEST_RESULTS.md. Full Self-Repair,
+Budget Lock and production clearance remain incomplete. This branch is a draft only.

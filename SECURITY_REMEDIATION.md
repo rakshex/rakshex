@@ -31,3 +31,9 @@ against an immutable repository base, refuses moved bases and never force-pushes
 or deploys. Live GitHub App credentials are not configured; protocol tests use fake HTTP.
 Dedicated worker infrastructure, lease/crash recovery, retention/restore and sandbox-host
 hardening remain operational blockers. See devpulse-backend/SELF_REPAIR_OPERATIONS.md.
+
+Final concurrency review: shared repair authorization now takes the workspace row lock
+before the separate membership SELECT, avoiding a pre-lock role snapshot. A real PG
+revocation-wait regression is added. A partial unique index enforces one active repair
+per workspace across processes; concurrent creates return conflict rather than duplicating
+queued work. Paths are bounded and publication has a global worker deadline.

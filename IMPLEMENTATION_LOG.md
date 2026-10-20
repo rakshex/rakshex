@@ -126,3 +126,8 @@ and worker checks, displayed migration provenance, and refused GitHub links/subm
 executable modes via immutable Git tree inspection. Corrected the existing browser
 request extractor to accept shorthand body properties; all 101 declared request
 contracts verify without removing checks.
+
+Final concurrency hardening: shared repair access locks workspace before reading roles;
+added PG wait/revocation proof. Added an additive partial unique index for active jobs,
+conflict handling and concurrent submission regression. Publication has a 120-second
+worker deadline; source paths are bounded to eight components/240 characters.

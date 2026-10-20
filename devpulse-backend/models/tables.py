@@ -490,4 +490,7 @@ class RepairJob(Base):
     approval_hash = Column(String(64))
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
-    __table_args__ = (Index('ix_repair_jobs_workspace_created','workspace_id','created_at'),)
+    __table_args__ = (Index('ix_repair_jobs_workspace_created','workspace_id','created_at'),
+        Index('uq_repair_jobs_active_workspace','workspace_id',unique=True,
+              sqlite_where=status.in_(['queued','validating','publication_queued','publishing']),
+              postgresql_where=status.in_(['queued','validating','publication_queued','publishing'])))

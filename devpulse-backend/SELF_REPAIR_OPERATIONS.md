@@ -21,10 +21,10 @@ for manual review. Test success covers submitted scope, not the whole repository
   mutable tags are rejected. Review/rebuild image provenance regularly.
 - Run `python -m repair_worker --watch` from devpulse-backend on this separate host.
   One worker only with dev SQLite; PostgreSQL row claims support multiple workers.
-  Supervise the process and allow at least 90 seconds for shutdown.
+  Supervise the process and allow at least 180 seconds for shutdown.
 - Submit 1–40 explicit relative .py paths (at most 256 KiB source; 768 KiB total),
   including existing tests/test_*.py. Optional source_root maps to a repository subfolder.
-  No archives, symlinks, Git clone hooks or arbitrary host commands are accepted.
+  Paths are bounded to 240 characters/eight components. No archives, symlinks, Git clone hooks or arbitrary host commands are accepted.
 
 Snapshots run non-root, read-only, network-disabled, capability-free, no new privileges,
 64 PIDs, 256 MiB, 1 CPU, 30 seconds and 128 KiB captured output; /tmp is a 16 MiB noexec
@@ -50,7 +50,7 @@ Accepted owners/admins approve the exact diff/evidence hash. Worker rechecks per
 patch integrity, source/tests against the immutable repository base and unchanged base
 branch. It creates one deterministic branch and idempotent draft PR, without force push,
 merge or deployment. Retry recognizes matching tree/parent and an existing open draft;
-human branch edits or closed/ready PRs require review. A partial failure may leave a branch.
+human branch edits or closed/ready PRs require review. Publication has a 120-second worker deadline. A partial failure may leave a branch.
 
 ## Recovery and deletion
 

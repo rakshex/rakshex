@@ -6,7 +6,7 @@ from typing import Literal
 from fastapi import APIRouter,Depends,HTTPException,Query,Request
 from pydantic import BaseModel,ConfigDict,Field,ValidationError,field_validator
 from sqlalchemy import select,func
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError,IntegrityError
 from models.tables import RepairJob
 from routes.auth import require_auth
 from routes.repair_analyses import _access,_unique_object
@@ -112,6 +112,7 @@ async def create_job(request:Request,user=Depends(require_auth)):
             row=RepairJob(id=job_id,workspace_id=payload.workspace_id,actor_id=user['id'],status='queued',sealed_bundle=sealed,patch_hash=plan['patch_hash'],report=report)
             session.add(row);await session.commit();await session.refresh(row)
             return {'job':serialize(row)}
+    except IntegrityError:raise HTTPException(409,'Another repair became active; refresh and retry') from None
     except SQLAlchemyError:raise HTTPException(503,'Repair storage unavailable') from None
 
 
@@ -150,7 +151,8 @@ async def approve_publication(job_id:uuid.UUID,payload:Approval,user=Depends(req
         if not config or config['repository']!=row.report['repository'] or not os.getenv('GITHUB_APP_ID') or not os.getenv('GITHUB_APP_PRIVATE_KEY'):
             raise HTTPException(503,'A workspace-bound GitHub App installation must be configured')
         row.approved_by=user['id'];row.approval_hash=payload.evidence_hash;row.status='publication_queued'
-        await session.commit()
+        try:await session.commit()
+        except IntegrityError:raise HTTPException(409,'Another repair is active; wait and review evidence again') from None
         return {'job':serialize(row)}
 
 

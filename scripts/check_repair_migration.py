@@ -22,12 +22,13 @@ with tempfile.TemporaryDirectory(prefix='rakshex-migration-') as directory:
             'id','workspace_id','actor_id','report','evidence_hash','created_at'}
         assert connection.execute('PRAGMA foreign_key_list(repair_analyses)').fetchall()
         assert connection.execute('PRAGMA foreign_key_list(repair_jobs)').fetchall()
+        assert any(row[1]=='uq_repair_jobs_active_workspace' and row[2]==1 for row in connection.execute('PRAGMA index_list(repair_jobs)'))
     migrate('downgrade', '002_onboarding_progress')
     with sqlite3.connect(database) as connection:
         assert not connection.execute("SELECT name FROM sqlite_master WHERE name='repair_analyses'").fetchall()
         assert connection.execute('SELECT username FROM users WHERE id=1').fetchone() == ('migration',)
     migrate('upgrade', 'head')
     with sqlite3.connect(database) as connection:
-        assert connection.execute('SELECT version_num FROM alembic_version').fetchone() == ('20261020_repair_jobs',)
+        assert connection.execute('SELECT version_num FROM alembic_version').fetchone() == ('20261020_active_repair',)
         assert connection.execute('SELECT username FROM users WHERE id=1').fetchone() == ('migration',)
     print('PASS: isolated upgrade/downgrade/upgrade; schema, foreign keys and parent data preserved')

@@ -50,7 +50,7 @@ async def process_one(job_id=None):
                 await _access(session,row.workspace_id,row.approved_by,write=True,delete=True)
                 config=configured_repository(row.workspace_id)
                 if not config:raise ValueError('configuration')
-                result=await publish_draft(bundle,report,ident,config)
+                result=await asyncio.wait_for(publish_draft(bundle,report,ident,config),timeout=120)
                 row.status='draft_published';row.report={**report,'publication':result,'message':'Draft PR published. Human review and merge required.'}
                 await session.commit()
         else:

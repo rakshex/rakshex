@@ -60,3 +60,12 @@ the worker rechecks the contract hashes before execution or publication. Final l
 repair/publisher suite: **32 passed, 4 Docker-only skips**, 3 warnings (9.16s).
 TypeScript passed. Container/browser CI is rerun for the pushed final tree; read the
 PR's final-head links instead of treating prior runs as verification of later changes.
+
+### Concurrency follow-up
+
+The final security review separated workspace-lock acquisition from role lookup and added
+a real PostgreSQL regression for revocation while authorization waits. A new additive
+active-workspace unique-index migration closes concurrent submission races. Focused local
+repair/analysis/concurrency run: **43 passed, 6 skips** (4 Docker, 2 PG), 3 warnings; migration
+upgrade/downgrade/re-upgrade passed including the partial unique index. Final CI reruns the
+actual PostgreSQL case and full browser/container suites; see PR for immutable evidence.

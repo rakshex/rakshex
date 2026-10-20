@@ -81,7 +81,7 @@ export default function RepairWorkbench(){
         {!jobs.length?<p className="text-zinc-400">No repair jobs in this workspace yet.</p>:jobs.map(job=><article key={job.id} className="min-w-0 space-y-3 rounded-xl border border-zinc-800 p-4 sm:p-6">
           <div className="flex flex-wrap justify-between gap-2"><h4 className="break-all font-medium">{job.report.repository}</h4><span role="status" className="rounded bg-zinc-800 px-2 py-1 text-xs">{job.status.replaceAll('_',' ')}</span></div>
           <p className="text-sm">{job.report.message}</p>
-          {job.report.migration&&<p className="text-sm text-zinc-300">Proposed migration: <code>{job.report.migration.removed}</code> → <code>{job.report.migration.added}</code>. <a className="text-blue-300 underline" href={job.report.migration.provenance} target="_blank" rel="noopener noreferrer">Review migration reference</a></p>}
+          {job.report.migration&&<p className="break-all text-sm text-zinc-300">Proposed migration: <code>{job.report.migration.removed}</code> → <code>{job.report.migration.added}</code>. <a className="text-blue-300 underline" href={job.report.migration.provenance} target="_blank" rel="noopener noreferrer">Review migration reference</a></p>}
           {job.report.before_hash&&<p className="break-all text-xs text-zinc-400">Contract fingerprints: {job.report.before_hash} → {job.report.after_hash}</p>}
           <p className="break-all text-xs text-zinc-400">Base commit: {job.report.base_sha}<br/>Patch SHA-256: {job.patch_hash}</p>
           <ul className="space-y-1 text-sm">{job.report.impacts.map((impact,i)=><li className="break-all" key={i}>{impact.file}:{impact.line} — request property rename</li>)}</ul>

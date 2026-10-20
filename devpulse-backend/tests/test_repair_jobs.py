@@ -213,3 +213,14 @@ async def test_worker_rechecks_revoked_membership_before_execution(client,owner)
         row=await session.get(RepairJob,job['id'])
         assert row.status=='rejected'
         assert not row.report['checks']
+
+
+@pytest.mark.asyncio
+async def test_concurrent_submission_has_one_active_job(client,owner):
+    import asyncio
+    from sqlalchemy import select,func
+    headers,ws=owner;data=fixture_input();data.update(workspace_id=ws,consent=True)
+    responses=await asyncio.gather(*(client.post('/api/repair-jobs',headers=headers,json=data) for _ in range(2)))
+    assert sorted(response.status_code for response in responses)==[201,409]
+    async with AsyncSessionLocal() as session:
+        assert await session.scalar(select(func.count()).select_from(RepairJob).where(RepairJob.workspace_id==ws))==1

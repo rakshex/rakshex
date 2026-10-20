@@ -56,8 +56,12 @@ async def _access(session, workspace_id: str, user_id: int, write=False, delete=
     statement = (select(TeamMember).join(Team, TeamMember.team_id == Team.id)
                  .where(Team.id == workspace_id, TeamMember.user_id == user_id, TeamMember.accepted.is_(True)))
     if write:
-        # Same workspace lock as membership changes; authorization cannot go stale before persistence.
-        statement = statement.with_for_update(of=Team)
+        # Acquire the workspace lock BEFORE issuing the membership SELECT. A joined
+        # SELECT FOR UPDATE can retain a pre-wait snapshot of the membership row.
+        # Membership mutations use the same lock then re-read roles separately.
+        team = (await session.execute(select(Team).where(Team.id == workspace_id).with_for_update())).scalar_one_or_none()
+        if team is None:
+            raise HTTPException(404, "Workspace not found")
     member = (await session.execute(statement)).scalar_one_or_none()
     if member is None:
         raise HTTPException(404, "Workspace not found")

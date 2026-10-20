@@ -26,7 +26,7 @@ def safe_files(files):
     total = 0
     for path, source in files.items():
         parts = PurePosixPath(path).parts if isinstance(path,str) else ()
-        if (not parts or str(PurePosixPath(path)) != path or path.startswith('/') or
+        if (not parts or len(parts)>8 or len(path)>240 or str(PurePosixPath(path)) != path or path.startswith('/') or
             any(part.startswith('.') or not re.fullmatch(r'[A-Za-z0-9_-]+(?:\.py)?',part) for part in parts)
             or '..' in parts or not path.endswith('.py') or not isinstance(source,str)):
             raise RepairRefused('Only normalized relative Python source/test paths are accepted')

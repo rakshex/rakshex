@@ -15,7 +15,7 @@ for (const file of files) {
         if (init && ts.isObjectLiteralExpression(init)) {
           for (const property of init.properties) {
             if (property.name?.getText(source) === 'method') method = property.initializer.getText(source).replace(/['"]/g, '');
-            if (property.name?.getText(source) === 'body' && ts.isCallExpression(property.initializer)) {
+            if (property.name?.getText(source) === 'body' && ts.isPropertyAssignment(property) && property.initializer && ts.isCallExpression(property.initializer)) {
               const body = property.initializer.arguments[0];
               if (body && ts.isObjectLiteralExpression(body) && body.properties.every(p => p.name)) bodyKeys = body.properties.map(p => p.name.getText(source).replace(/['"]/g, ''));
             }

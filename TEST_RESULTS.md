@@ -41,3 +41,14 @@ Initial new test setup incorrectly expected existing workspace creation to retur
 corrected to its actual 200 contract. Dependency installation hit a truncated Cypress
 binary; installation was repeated with binary download disabled. CI supplies the browser.
 Final immutable CI run links and any failures/fixes will be recorded in the draft PR.
+
+### First repair CI result and browser preflight fix
+
+At 3b12bd1, isolated Self-Repair CI passed **35 tests**, including actual Docker
+baseline/candidate, egress/read-only/environment, timeout/output and negative patch
+gates (run 39390636256). Backend, frontend, Cloudflare, full-stack PostgreSQL and
+membership/migration jobs passed. Browser preflight crashed on a shorthand body
+property in the existing TypeScript request extractor before any Cypress test ran.
+Fixed its property-assignment guard without disabling checks; rerunning full browser CI.
+Added publisher tree-mode verification to refuse symlinks/submodules/executable files;
+its protocol tests passed (10). Final-head results are recorded in the PR.

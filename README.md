@@ -9,8 +9,11 @@ before enabling a real provider mutation.
 
 **Status: early implementation, not production-ready.** This branch preserves the
 DevPulse source at `Akshu1245/Rakshex-complete-codebase@b8590fb` and implements the
-first secure-core and contract-analysis slice. It does not claim the complete
-Self-Repair pipeline, provider monitoring, SDK migration repair or money broker.
+secure core, contract analysis and a bounded Python requests repair pipeline.
+Planning, isolated before/after validation and GitHub App draft publication are
+implemented for confirmed JSON request-key renames. Running the worker and live
+publication requires operator setup; general SDK migration repair, provider
+monitoring and money broker capabilities are not claimed.
 
 ## Available in this milestone
 - Team membership writes recheck accepted actor/target roles in one locked
@@ -22,7 +25,18 @@ Self-Repair pipeline, provider monitoring, SDK migration repair or money broker.
   operations require review. This is not comprehensive semantic compatibility.
 - Raw specifications, raw endpoint paths, descriptions and example secrets are
   not saved by this intake. Only hashes and result metadata are retained. No
-  repository clone, model call, provider mutation, patch execution or PR publishing.
+  repository clone, model call or provider mutation in this analysis intake.
+- The Repair and validate workflow accepts explicitly scoped Python files/tests,
+  confirms an explicit request-key rename against both schemas, maps affected calls
+  and generates a minimal diff. It stores source/patch in an encrypted job bundle.
+- A separate worker validates baseline and candidate in pinned, read-only, non-root,
+  network-disabled, resource-bounded Docker containers. Failed/empty/green-baseline
+  checks cannot release a candidate. No host execution fallback exists.
+- Owners/admins review the exact evidence/diff before approving a GitHub App draft PR.
+  The publisher verifies immutable repository source/base and never force-pushes,
+  merges or deploys. A backend App installation/key is not yet configured here.
+- Responsive navigation, keyboard focus handling, consent/error states and guarded
+  deletion/publication are available. See the current PR for browser/a11y evidence.
 - References, callbacks and webhooks are rejected; combined request limit is
   256 KiB. No spec URLs are fetched.
 
@@ -34,9 +48,8 @@ Self-Repair pipeline, provider monitoring, SDK migration repair or money broker.
 | `DELETE /api/repair-analyses/{id}` | accepted owner/admin only |
 
 ## Run locally
-Python 3.12 and Node are required. Existing Node 20 engine declarations and Node 24
-Cloudflare configuration need reconciliation before release; this milestone was
-verified locally under Node 24.19.0/npm 11.9.0. Do not use production credentials.
+Python 3.12, Node 24 and npm 11 are required. Runtime, engine declarations and CI
+now agree on Node 24. Do not use production credentials for development.
 
 Backend, from `devpulse-backend`:
 ```sh
@@ -55,6 +68,14 @@ npm run dev
 Sign up/sign in through the account menu, open `/self-repair`, create a workspace,
 and submit two authorized inline contracts. A removed operation yields review
 required, never a claim that customer code has been repaired.
+
+## Repair worker and publication setup
+
+Read [SELF_REPAIR_OPERATIONS.md](devpulse-backend/SELF_REPAIR_OPERATIONS.md) for the
+separate worker/image, encryption and workspace-bound GitHub App configuration. A
+connected ChatGPT GitHub account does not configure the backend App. The adapter
+refuses dynamic calls, JS/TS/provider SDKs and semantic changes. It tests only the
+submitted scope, not the entire repository. No deployment was performed.
 
 ## Verify
 ```sh

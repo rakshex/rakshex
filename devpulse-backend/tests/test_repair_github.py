@@ -25,7 +25,7 @@ def test_app_jwt_is_signed_short_lived_and_excludes_source(monkeypatch):
 
 
 class FakeGitHub:
-    def __init__(self,bundle):self.bundle=bundle;self.writes=[];self.ref=None;self.pr=None;self.moved=False;self.wrong_source=False;self.denied=False
+    def __init__(self,bundle):self.bundle=bundle;self.writes=[];self.ref=None;self.pr=None;self.moved=False;self.wrong_source=False;self.denied=False;self.symlink=False
     def handle(self,request):
         path=request.url.path;method=request.method
         body=json.loads(request.content) if request.content else {}
@@ -48,6 +48,26 @@ class FakeGitHub:
             sha=path.split('/')[-1];source=next(src for p,src in self.bundle['input']['files'].items() if hashlib.sha256(p.encode()).hexdigest()==sha)
             result={'encoding':'base64','content':base64.b64encode(source.encode()).decode()}
         elif path.endswith('/git/commits/'+'a'*40):result={'tree':{'sha':'d'*40}}
+        elif '/git/trees/' in path:
+            prefix=self.bundle['input'].get('source_root','')
+            all_paths=[(prefix+'/' if prefix else '')+p for p in self.bundle['input']['files']]
+            folders={''}
+            for file in all_paths:
+                parts=file.split('/')
+                for index in range(1,len(parts)):folders.add('/'.join(parts[:index]))
+            folder=next(folder for folder in folders if (('d'*40) if not folder else hashlib.sha256(('tree:'+folder).encode()).hexdigest())==path.split('/')[-1])
+            entries={}
+            for file in all_paths:
+                if folder and not file.startswith(folder+'/'):continue
+                rest=file[len(folder)+1:] if folder else file
+                child=rest.split('/')[0]
+                if '/' in rest:
+                    sub=(folder+'/' if folder else '')+child
+                    entries[child]={'path':child,'mode':'040000','type':'tree','sha':hashlib.sha256(('tree:'+sub).encode()).hexdigest()}
+                else:
+                    original=file[len(prefix)+1:] if prefix else file
+                    entries[child]={'path':child,'mode':'120000' if self.symlink else '100644','type':'blob','sha':hashlib.sha256(original.encode()).hexdigest()}
+            result={'tree':list(entries.values()),'truncated':False}
         elif path.endswith('/git/trees'):result={'sha':'e'*40}
         elif path.endswith('/git/commits'):
             assert body['parents']==['a'*40];result={'sha':'b'*40}
@@ -96,10 +116,10 @@ async def test_publication_matches_snapshot_pins_parent_and_only_creates_one_dra
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('kind',['moved','wrong_source','denied','unvalidated','tampered','other_repository'])
+@pytest.mark.parametrize('kind',['moved','wrong_source','denied','symlink','unvalidated','tampered','other_repository'])
 async def test_publication_fails_closed_before_branch_or_pr_write(protocol,kind):
     bundle,report,fake=protocol;config={'repository':'rakshex/rakshex','installation_id':123}
-    if kind in ('moved','wrong_source','denied'):setattr(fake,kind,True)
+    if kind in ('moved','wrong_source','denied','symlink'):setattr(fake,kind,True)
     elif kind=='unvalidated':report['checks']['accepted']=False
     elif kind=='tampered':bundle['plan']['diff']+='tamper'
     else:config['repository']='Akshu1245/Rakshex-complete-codebase'

@@ -50,16 +50,38 @@ async def publish_draft(bundle,report,job_id,config):
         branch=quote(payload['base_branch'],safe='')
         head=await request('GET',root+'/git/ref/heads/'+branch,token)
         if head['object']['sha']!=base:raise PublicationBlocked('Base branch moved; create and validate a new candidate')
+        commit=await request('GET',root+'/git/commits/'+base,token)
+        trees={}
+        async def regular_blob(path):
+            tree_sha=commit['tree']['sha']
+            parts=path.split('/')
+            for index,part in enumerate(parts):
+                if tree_sha not in trees:
+                    trees[tree_sha]=await request('GET',root+'/git/trees/'+tree_sha,token)
+                current=trees[tree_sha]
+                if current.get('truncated'):raise PublicationBlocked('Repository tree is incomplete')
+                matches=[entry for entry in current.get('tree',[]) if entry['path']==part]
+                if len(matches)!=1:raise PublicationBlocked('Scoped repository path is missing')
+                entry=matches[0]
+                if index==len(parts)-1:
+                    if entry.get('mode')!='100644' or entry.get('type')!='blob':
+                        raise PublicationBlocked('Only regular non-executable Python files are supported; links and submodules are refused')
+                    return entry['sha']
+                if entry.get('mode')!='040000' or entry.get('type')!='tree':
+                    raise PublicationBlocked('Source scope cannot traverse a link or submodule')
+                tree_sha=entry['sha']
+            raise PublicationBlocked('Empty repository path')
         # Submitted tests/source must exactly match the selected immutable repository commit.
         prefix=payload.get('source_root','').strip('/')
         def repo_path(path):return prefix+'/'+path if prefix else path
         for path,source in payload['files'].items():
+            expected_blob=await regular_blob(repo_path(path))
             original=await request('GET',root+'/contents/'+quote(repo_path(path),safe='/')+'?ref='+base,token)
+            if original.get('sha')!=expected_blob:raise PublicationBlocked('Repository path identity mismatch')
             if original.get('type')!='file' or original.get('encoding')!='base64':raise PublicationBlocked('Only regular repository files are supported')
             if base64.b64decode(original['content']).decode()!=source:raise PublicationBlocked('Submitted snapshot does not match the immutable base commit')
             blob=await request('GET',root+'/git/blobs/'+original['sha'],token)
             if blob.get('encoding')!='base64' or base64.b64decode(blob['content']).decode()!=source:raise PublicationBlocked('Repository source mismatch')
-        commit=await request('GET',root+'/git/commits/'+base,token)
         tree=await request('POST',root+'/git/trees',token,json={'base_tree':commit['tree']['sha'],
             'tree':[{'path':repo_path(e['file']),'mode':'100644','type':'blob','content':e['after']} for e in plan['edits']]})
         created=await request('POST',root+'/git/commits',token,json={'message':f'fix: reviewed request property migration ({job_id})','tree':tree['sha'],'parents':[base]})

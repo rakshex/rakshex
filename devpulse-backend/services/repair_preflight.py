@@ -30,7 +30,7 @@ async def verify_repair_source(payload, config, *, transport=None):
         or not isinstance(files,dict) or not 1<=len(files)<=40):
         raise PreflightBlocked('Unverified repository binding or invalid source scope')
     for path,source in files.items():
-        if not isinstance(path,str) or not re.fullmatch(r'(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\\.py',path) or not isinstance(source,str):
+        if not isinstance(path,str) or not re.fullmatch(r'(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.py',path) or not isinstance(source,str):
             raise PreflightBlocked('Invalid source scope')
     async with httpx.AsyncClient(base_url='https://api.github.com',timeout=15,follow_redirects=False,transport=transport) as client:
         async def request(method,path,token,**kwargs):

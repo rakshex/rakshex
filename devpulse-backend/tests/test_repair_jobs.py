@@ -132,8 +132,19 @@ async def test_worker_never_falls_back_to_host_execution(client,owner,monkeypatc
 
 @pytest.mark.skipif(not os.getenv('REPAIR_SANDBOX_IMAGE'),reason='Dedicated Docker integration job required')
 @pytest.mark.asyncio
-async def test_real_isolated_worker_baseline_fails_candidate_passes(client,owner):
+async def test_real_isolated_worker_baseline_fails_candidate_passes(client,owner,monkeypatch):
+    import repair_worker
     from repair_worker import process_one
+    # A synthetic fixture has no installed GitHub App. Stub only the remote,
+    # read-only identity check; the real container still executes and enforces
+    # all isolation, baseline-failure, and candidate-pass assertions below.
+    monkeypatch.setattr(repair_worker,'configured_repository',
+                        lambda workspace: {'repository':'rakshex/rakshex','installation_id':1})
+    async def fixture_preflight(payload,config):
+        assert config['repository']==payload['repository']
+        assert payload['base_sha']=='a'*40
+        return {'status':'fixture_verified_for_test_only','file_count':len(payload['files'])}
+    monkeypatch.setattr(repair_worker,'verify_repair_source',fixture_preflight)
     headers,ws=owner;data=fixture_input();data.update(workspace_id=ws,consent=True)
     job=(await client.post('/api/repair-jobs',headers=headers,json=data)).json()['job']
     assert await process_one(job['id'])
